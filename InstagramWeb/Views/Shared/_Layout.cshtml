@@ -14,9 +14,16 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+
+    <link href="~/Scripts/dropzone/dropzone.min.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
+<style>
+  .sidebarcolor  {
+        background-color: #ffd1ef;
+    }
+    </style>
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -170,17 +177,17 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                      
-                     
+
+
                         <li class="nav-item has-treeview ,active">
                             <a href="@Url.Action("AddSchedule", "Home")" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
                                     Post Scheduling
-                                   @* <i class="fas fa-angle-left right"></i>*@
+                                    @* <i class="fas fa-angle-left right"></i>*@
                                 </p>
                             </a>
-                   </ul>
+                    </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
             </div>
@@ -213,5 +220,9 @@
     <script src="~/Content/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="~/Content/dist/js/demo.js"></script>
+
+    
+    <script src="~/Scripts/dropzone/dropzone.min.js"></script>
+    @RenderSection("scripts", false)
 </body>
 </html>

@@ -70,3 +70,11 @@ C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.c
 C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.dll
 C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.pdb
 C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.csprojAssemblyReference.cache
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\EntityFramework.dll
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\EntityFramework.SqlServer.dll
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\EntityFramework.xml
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\EntityFramework.SqlServer.xml
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\es\EntityFramework.resources.dll
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\bin\es\EntityFramework.SqlServer.resources.dll
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Initial.resources
+C:\Users\Touseef\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.csproj.GenerateResource.cache

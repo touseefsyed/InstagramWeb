@@ -1,16 +1,15 @@
 ﻿@model InstagramWeb.Models.Schedule
 
+
 @{
     ViewBag.Title = "AddSchedule";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
 }
 
-    
-        <link href="~/Scripts/dropzone/dropzone.min.css" rel="stylesheet" />
-        <script src="~/Scripts/dropzone/dropzone.min.js"></script>
-<script src="~/Scripts/bootstrap.min.js"></script>
- 
+
+
+
 <div class="content-wrapper">
 
     <div class="jumbotron">
@@ -47,7 +46,7 @@
                 @Html.Label("Upload Imaes")
                 <div class="dropzone clsbox" id="mydropzone">
 
-                    @Html.HiddenFor(x => x.Description, new { @class = "form-control", placeholder = "Click here" })
+                    @Html.DisplayFor(x => x.scheduleImages)
 
                 </div>
             </div>
@@ -55,8 +54,7 @@
             <div class="clsbox-1">
                 @Html.Label("Upload Video")
                 <div class="dropzone clsbox1" id="mydropzone1">
-
-                    @Html.HiddenFor(x => x.Description, new { @class = "form-control", placeholder = "Click here" })
+                    @Html.DisplayFor(x => x.scheduleVideos)
 
                 </div>
             </div>
@@ -65,6 +63,8 @@
             <button class="btn btn-success" id="submit-all">
                 Submit All Files
             </button>
+
+
 
         }
 
@@ -83,22 +83,21 @@
 
 
 
+@section scripts{
+    <script>
+        Dropzone.autoDiscover = false;
 
-<script>
-                Dropzone.autoDiscover = false;
+        // Dropzone class:
+        // var myDropzone = new Dropzone("div#mydropzone", { url: "/file/post" });
 
-                // Dropzone class:
-            var myDropzone = new Dropzone("div#mydropzone", {url: "/file/post" });
-
-            // If you use jQuery, you can use the jQuery plugin Dropzone ships with:
-    $("div#myDrop").dropzone({ url: "/file/post" });
+        // If you use jQuery, you can use the jQuery plugin Dropzone ships with:
+      // $("#mydropzone").dropzone({ url: "@Url.Action("Upload", "Home")" });
+      //  $("#mydropzone1").dropzone({ url: "@Url.Action("Upload", "Home")" });
 
 
 
-    // Dropzone class:
-    var myDropzone1 = new Dropzone1("div#mydropzone", { url: "/file/post" });
 
-    // If you use jQuery, you can use the jQuery plugin Dropzone ships with:
-    $("div#myDrop").dropzone({ url: "/file/post" });
-</script>
+    </script>
+}
+
 
