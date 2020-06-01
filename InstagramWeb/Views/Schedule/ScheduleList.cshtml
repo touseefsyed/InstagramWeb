@@ -1,0 +1,144 @@
+﻿@using System.Diagnostics.Eventing.Reader
+@using InstagramWeb.Models
+@using Roles = InstagramWeb.Models.Roles
+@model List<InstagramWeb.Models.Schedule>
+@{
+    ViewBag.Title = "ScheduleList";
+    var sessionUser = Session["User"] as SessionUser;
+    List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
+
+}
+
+<!-- Main content -->
+<section class="content" style="margin-top:15px">
+    <div class="container-fluid">
+
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3 class="card-title">GetFruity - Schedules</h3>
+                        <div class="float-right">
+
+                            <a href="@Url.Action("AddSchedule", "Schedule")" role="button" id="AddShow" class="btn btn-primary">
+                                <span class="fa fa-plus"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table class="table table-bordered table-striped datatable">
+                    <thead>
+                        <tr>
+                            <th>Caption</th>
+                            <th>Media</th>
+                            <th>Schedule Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var Show in Model)
+                        {
+                            <tr>
+                                <td>@Show.Caption</td>
+
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(Show.ImagePath))
+                                    {
+                                        if (ImageExtensions.Contains((Path.GetExtension(Show.ImagePath).ToUpper())))
+                                        {
+                                            <img src="@Url.Content(string.IsNullOrWhiteSpace(Show.ImagePath) ? "~/Public/Files/Default/default-poster.png" : Show.ImagePath)" style="width: 80px">
+
+                                        }
+                                        else
+                                        {
+                                            <video width="80" controls>
+                                                <source src="@Url.Content(string.IsNullOrWhiteSpace(Show.ImagePath) ? "~/Public/Files/Default/default-poster.webm" : Show.ImagePath)" id="video_here">
+                                            </video>
+                                        }
+                                    }
+
+                                </td>
+                                <td>@Show.TimeStamp.ToString("yyyy-MM-dd hh:mm tt")</td>
+                                <td>
+                                    @{
+                                        if (Show.PostedStatus == null)
+                                        {
+                                            @Html.Raw(@"<a href=""#/"" class=""retryBtn"" data-id=" + Show.Id + @"><i class=""fas fa-calendar text-primary""></i></a>")
+                                        }
+                                        else if (Show.PostedStatus == false)
+                                        {
+                                            <a href="#/" class="retryBtn" data-id="@Show.Id"  data-toggle="tooltip" title="@(sessionUser.RoleId == (int)Roles.Admin  ? Show.Exception : "Failed due to some issues." )"><i class="fa fa-bug text-danger"></i></a>
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw(@"<i class=""fas fa-check-circle text-success""></i>")
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("AddSchedule", "Schedule", new { ID = Show.Id})"><i class="fa fa-edit text-default"></i></a>
+                                    <a href="#" data-id="@Show.Id" class="deleteScheduleBtn"><i class="fa fa-trash text-danger"></i></a>
+
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </div><!-- /.container-fluid -->
+
+
+</section>
+<!-- /.content -->
+
+
+@section scripts
+{
+    <script>
+        var y;
+        $(".retryBtn").click(function () {
+            var el = this;
+            var id = $(this).data("id");
+            bootbox.confirm("Are you sure you want to retry posting this ?",
+                function (result) {
+
+                    if (result) {
+                        bootbox.alert("this process might take upto 5 minutes. Please either wait or come back later to this page to notice a status change.");
+                        $.post("@Url.Action("SchedulePost", "Schedule")", { ScheduleId: id },
+                            function(resp) {
+                                window.location.reload();
+                            });
+                    }
+                });
+        });
+
+        $(".deleteScheduleBtn").click(function() {
+            var id = $(this).data("id");
+            bootbox.confirm("Are you sure you want to delete this schedule ?",
+                function(result) {
+                    if (result) {
+                        $.post("@Url.Action("DeleteSchedule", "Schedule")",
+                            { ScheduleId: id },
+                            function(resp) {
+                                window.location.reload();
+                            });
+
+                    }
+
+                });
+        });
+
+
+    </script>
+}
+
+

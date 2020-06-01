@@ -1,0 +1,60 @@
+﻿@model InstagramWeb.Models.Proxy
+
+@{
+    ViewBag.Title = "AddProxy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  
+}
+
+
+    <section class="content" style="margin-top:10px">
+        <div class="container-fluid">
+            <form action="@Url.RouteUrl("AddProxy")" method="post" enctype="multipart/form-data">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">GetFruity - Proxies</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.HiddenFor(x => x.Id)
+                                            @Html.LabelFor(x => x.Name)
+                                            @Html.TextBoxFor(x => x.Name, new { @class = "form-control", placeholder = "Name" })
+                                            @Html.ValidationMessageFor(x => x.Name)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Country)
+                                            @Html.TextBoxFor(x => x.Country, new { @class = "form-control", placeholder = "Country" })
+                                            @Html.ValidationMessageFor(x => x.Country)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.IpAddress)
+                                            @Html.TextBoxFor(x => x.IpAddress, new { @class = "form-control", placeholder = "IP Address" })
+                                            @Html.ValidationMessageFor(x => x.IpAddress)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <a href="@Url.Action("ProxyList", "Proxy")" role="button" class="btn btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </form>
+        </div>
+    </section>

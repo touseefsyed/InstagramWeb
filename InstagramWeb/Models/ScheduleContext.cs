@@ -9,9 +9,10 @@ namespace InstagramWeb.Models
     public class ScheduleContext : DbContext
     {
         public DbSet<Schedule> Schedules { get; set; }
-        public DbSet<ScheduleImage> ScheduleImages { get; set; }
-        public DbSet<ScheduleVideo> ScheduleVideos { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Proxy> Proxies { get; set; }
 
         public ScheduleContext() : base("name=DefaultConnectionString")
         {

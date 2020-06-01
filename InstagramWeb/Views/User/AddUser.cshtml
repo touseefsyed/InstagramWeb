@@ -1,0 +1,181 @@
+﻿@model InstagramWeb.Models.ViewModels.RegisterRequest
+@{
+    ViewBag.Title = "AddUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    <section class="content" style="margin-top:10px">
+        <div class="container-fluid">
+            <form action="@Url.RouteUrl("AddUser")" method="post" enctype="multipart/form-data">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">GetFruity - Users</h3>
+                    </div>
+
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Username)
+                                            @Html.TextBoxFor(x => x.Username, new { @class = "form-control", placeholder = "Username" })
+                                            @Html.ValidationMessageFor(x => x.Username)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.HiddenFor(x => x.Id)
+                                            @Html.LabelFor(x => x.FirstName)
+                                            @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "First Name" })
+                                            @Html.ValidationMessageFor(x => x.FirstName)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.LastName)
+                                            @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Last Name" })
+                                            @Html.ValidationMessageFor(x => x.LastName)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Email)
+                                            @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "Email" })
+                                            @Html.ValidationMessageFor(x => x.Email)
+                                        </div>
+
+                                    </div>
+                                    @if (ViewBag.Profile == null || !ViewBag.Profile)
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Role">User Role</label>
+                                                <select class="form-control" name="RoleId">
+                                                    @foreach (var item in Enum.GetValues(typeof(InstagramWeb.Models.Roles)))
+                                                    {
+                                                        <option @(Model.RoleId == (int)item ? "selected" : "") value="@((int)item)">@(item.ToString())</option>
+                                                    }
+
+                                                </select>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" name="Profile" value="true">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="Role">Registered As</label>
+                                                @{
+                                                    string RoleName = string.Empty;
+                                                    foreach (var item in Enum.GetValues(typeof(InstagramWeb.Models.Roles)))
+                                                    {
+                                                        if (Model.RoleId == (int)item)
+                                                        {
+                                                            RoleName = item.ToString();
+
+                                                        }
+                                                    }
+
+                                                }
+                                                <input type="text" class="form-control" disabled value="@RoleName" />
+                                            </div>
+                                        </div>
+
+                                    }
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Password)
+                                            @Html.TextBoxFor(x => x.Password, new { type = "password", @class = "form-control", placeholder = "password" })
+                                            @Html.ValidationMessageFor(x => x.Password)
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ConfirmPassword)
+                                            @Html.TextBoxFor(x => x.ConfirmPassword, new { type = "password", @class = "form-control", placeholder = "Confirm Password" })
+                                            @Html.ValidationMessageFor(x => x.ConfirmPassword)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.InstagramUsername)
+                                            @Html.TextBoxFor(x => x.InstagramUsername, new { type = "text", @class = "form-control", placeholder = "Instagram Username" })
+                                            @Html.ValidationMessageFor(x => x.InstagramUsername)
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.InstagramPassword)
+                                            @Html.TextBoxFor(x => x.InstagramPassword, new { type = "password", @class = "form-control", placeholder = "Instagram Password" })
+                                            @Html.ValidationMessageFor(x => x.InstagramPassword)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.ProxyId)
+                                            <select class="form-control" name="ProxyId" id="ProxyId">
+                                                <option value="">Select Proxy</option>
+                                                @foreach (var proxy in Model.Proxies)
+                                                {
+                                                    <option @(Model.ProxyId == proxy.Id ?"selected" : "" ) value="@proxy.Id">@proxy.Name [@proxy.Country] [@proxy.IpAddress]</option>
+                                                }
+                                            </select>
+                                            @Html.ValidationMessageFor(x => x.ProxyId)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="pull-right">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            @Html.HiddenFor(x => x.ImagePath)
+                                            @if (string.IsNullOrEmpty(Model.ImagePath))
+                                            {
+                                                <img src="@Url.Content("~/Public/Files/Default/user-male-icon.png")" id="ProductImage" style="width:300px;height:300px">
+                                            }
+                                            else
+                                            {
+                                                <img src="@Url.Content(Model.ImagePath)" onerror="this.onerror=null;this.src='@Url.Content("/Images/ProjectImages/DefaultProduct.jpg")'" id="ProductImage" style="width:300px;height:300px">
+                                            }
+
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="input-group">
+                                                <div class="custom-file">
+                                                    <input type="file" name="ImageFile" data-src="#ProductImage" class="custom-file-input" id="SelectProductBtn" onchange="readURL2(this)" value="Select Product Image">
+                                                    <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <div class="float-right">
+                            <a href="@Url.Action("UserList", "User")" role="button" class="btn btn-default">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </form>
+        </div>
+    </section>

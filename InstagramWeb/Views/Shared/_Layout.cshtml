@@ -1,4 +1,9 @@
-﻿
+﻿@using InstagramWeb.Models
+@using Roles = InstagramWeb.Models.Roles
+@{
+    var user = Session["User"] as SessionUser;
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,152 +13,90 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+
+    <link href="@Url.Content("~/Content/plugins/fontawesome-free/css/all.css")" rel="stylesheet" />
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+    <!-- icheck bootstrap -->
 
-    <link href="~/Scripts/dropzone/dropzone.min.css" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css")" rel="stylesheet" />
+    <!-- Theme style -->
+
+
+    <link href="@Url.Content("~/Content/dist/css/adminlte.min.css")" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-</head>
-<style>
-  .sidebarcolor  {
-        background-color: #ffd1ef;
-    }
+    <link href="@Url.Content("~/Content/plugins/jquery-toast/dist/jquery.toast.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/select2/css/select2.min.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css")" rel="stylesheet" />
+
+    <link href="@Url.Content("~/Content/plugins/datepicker/datepicker.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/datepicker-ui/datepicker.css")" rel="stylesheet" />
+    <link href="@Url.Content("~/Content/plugins/timepicker/timepicker.css")" rel="stylesheet" />
+    <link rel="stylesheet" href="@Url.Content("/Content/bootstrap-datetimepicker.css")" />
+    <style>
+        .sidebarcolor {
+            background-color: #ffd1ef;
+        }
+
+        label.error, span.field-validation-error {
+            color: red;
+        }
+
+        input.error.input-validation-error {
+            border: 1px solid red;
+        }
     </style>
+</head>
+
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="../../index3.html" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="#" class="nav-link">Contact</a>
-                </li>
-            </ul>
-
-            <!-- SEARCH FORM -->
-            <form class="form-inline ml-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-
-            <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
-                <!-- Messages Dropdown Menu -->
+
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
+                    <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <img src="@Url.Content(string.IsNullOrEmpty(user.ImagePath) ? "~/Public/Files/Default/user-male-icon.png" : user.ImagePath)" style="height: 30px" class="user-image" alt="User Image">
+                        <span class="hidden-xs">@user.FirstName @user.LastName</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/Content/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Brad Diesel
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                        <center>
+                            <img src="@Url.Content(string.IsNullOrEmpty(user.ImagePath) ? "~/Public/Files/Default/user-male-icon.png" : user.ImagePath)" style="height: 150px; margin-top: 20px;" class="img-circle" alt="User Image">
+                        </center>
+                        <div class="row" style="padding: 10px">
+                            <div class="col-12">
+                                <center>
+                                    @user.FirstName @user.LastName
+                                </center>
+                                <div class="float-left">
+                                    <a href="@Url.Action("Profile", "User")" class="btn btn-default btn-flat">My Profile</a>
                                 </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/Content/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        John Pierce
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                <div class="float-right">
+                                    <a href="@Url.Action("Logout", "Account")" class="btn btn-default btn-flat">Sign out</a>
                                 </div>
+
                             </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="~/Content/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Nora Silvester
-                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                        </div>
+
+
                     </div>
                 </li>
-                <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
-                        <i class="fas fa-th-large"></i>
-                    </a>
-                </li>
+
             </ul>
+
+
         </nav>
+
         <!-- /.navbar -->
         <!-- Main Sidebar Container -->
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
-            <a href="../../index3.html" class="brand-link">
-                <img src="~/Content/dist/img/G.png"
+
+            <a href="https://getfruity.co/" class="brand-link">
+                <img src="@Url.Content("~/Posts/Default/logo.jpg")"
                      alt="Get Fruity"
                      class="brand-image img-circle elevation-3"
                      style="opacity: .8">
@@ -165,10 +108,10 @@
                 <!-- Sidebar user (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="~/Content/dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="@Url.Content(string.IsNullOrEmpty(user.ImagePath) ? "~/Public/Files/Default/user-male-icon.png" : user.ImagePath)" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">@Session["UserName"]</a>
+                        <a href="#" class="d-block">@user.FirstName @user.LastName</a>
                     </div>
                 </div>
 
@@ -176,17 +119,82 @@
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
-                             with font-awesome or any other icon font library -->
+    with font-awesome or any other icon font library -->
 
+                        @if (user.RoleId == (int)Roles.Admin)
+                        {
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-user-alt"></i>
+                                    <p>
+                                        User Management
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("UserList", "User")" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>User List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.RouteUrl("AddUser")" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Add User</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-globe"></i>
+                                    <p>
+                                        User Proxies
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("ProxyList", "Proxy")" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Proxy List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.RouteUrl("AddProxy")" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Add Proxy</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
 
-                        <li class="nav-item has-treeview ,active">
-                            <a href="@Url.Action("AddSchedule", "Home")" class="nav-link">
+                        <li class="nav-item has-treeview">
+                            <a href="#/" class="nav-link">
                                 <i class="nav-icon fas fa-edit"></i>
                                 <p>
-                                    Post Scheduling
-                                    @* <i class="fas fa-angle-left right"></i>*@
+                                    Schedules
+                                    <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="@Url.Action("ScheduleList", "Schedule")" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Schedule List</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="@Url.Action("AddSchedule", "Schedule")" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Add Schedule</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                 </nav>
                 <!-- /.sidebar-menu -->
@@ -194,15 +202,18 @@
             <!-- /.sidebar -->
         </aside>
 
-        @RenderBody()
+        <div class="content-wrapper">
+
+            @RenderBody()
+        </div>
         <!-- /.content-wrapper -->
 
         <footer class="main-footer">
             <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.0
+                <b>GetFruity Post</b> 0.1
             </div>
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
+            @*<strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
+                reserved.*@
         </footer>
 
         <!-- Control Sidebar -->
@@ -212,17 +223,175 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
-    <!-- jQuery -->
-    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="~/Content/dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="~/Content/dist/js/demo.js"></script>
 
-    
-    <script src="~/Scripts/dropzone/dropzone.min.js"></script>
+
+
+    <script src="@Url.Content("~/Scripts/jquery-3.4.1.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/jquery-validation/jquery.validate.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/jquery-validation/additional-methods.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
+    <!-- Bootstrap 4 -->
+    <script src="@Url.Content("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js")"></script>
+    <!-- AdminLTE App -->
+    <script src="@Url.Content("~/Content/dist/js/adminlte.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/jquery-toast/dist/jquery.toast.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/bootbox/bootbox.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/datatables/jquery.dataTables.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/select2/js/select2.full.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/datepicker/datepicker.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/datepicker-ui/datepicker.js")"></script>
+    <script src="@Url.Content("~/Scripts/moment.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/timepicker/timepicker.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/jquery.signalR-2.4.1.min.js")"></script>
+        <script src="@Url.Content("~/signalr/hubs")"></script>*@
+    <script src="@Url.Content("~/Scripts/vuevalidate.js")"></script>
+    @*<script src="@Url.Content("~/Scripts/popover.js")"></script>*@
+    <script src="@Url.Content("~/Scripts/vue-datepicker.js")"></script>
+    <script src="@Url.Content("~/Scripts/vue.js")"></script>
+    <script src="@Url.Content("~/Scripts/bootstrap-datetimepicker.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/inputmask/inputmask.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/inputmask/jquery.inputmask.bundle.js")"></script>
+    <script>
+
+        function readURL2(input) {
+            var id = $(input).attr("data-src");
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(id).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        //COMMON SCRIPTS
+        function readURL(input) {
+
+            console.log("called");
+
+            var id = $(input).data("src");
+            if (input.files && input.files[0]) {
+                if (input.files.length > 1) {
+                    var filesAmount = input.files.length;
+                    for (i = 0; i < filesAmount; i++) {
+                        var reader = new FileReader();
+
+                        $(id).html('');
+                        reader.onload = function (event) {
+                            $($.parseHTML('<img style="width:150px">')).attr('src', event.target.result).appendTo(id);
+                        }
+                        reader.readAsDataURL(input.files[i]);
+                    }
+                } else {
+
+                    var reader = new FileReader();
+                    console.log(id);
+                    reader.onload = function (e) {
+                        $(id).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        }
+    </script>
+
+    <script>
+
+
+        function isNullOrEmpty(s) {
+            return (s == null || s === "");
+        }
+
+        function readURL(input) {
+            var id = $(input).attr("data-src");
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $(id).attr("src", e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+
+        function Notify(message, position = "top-right") {
+            var theme = "";
+            if (message.MessageType == "Success") {
+                theme = "bg-green";
+            } else if (message.MessageType == "Error") {
+                theme = "bg-red";
+            } else if (message.MessageType == "Warning") {
+                theme = "bg-orange";
+            } else if (message.MessageType == "Info") {
+                theme = "bg-blue-alt";
+            }
+
+            $.toast({
+                heading: message.MessageType,
+                text: message.Description,
+                showHideTransition: 'plain',
+                icon: message.MessageType.toLowerCase(),
+                position: 'bottom-right',
+            });
+
+        }
+
+
+
+        $(function () {
+            //$('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' });
+            //$(".mask").each(function() {
+            //    var mask = $(this).data("mask");
+            //    var placeholder = $(this).data("mask-placeholder");
+            //    $(this).inputmask(mask);
+            //});
+
+            $('.datatable').dataTable({ responsive: true });
+            $('[data-toggle="tooltip"]').tooltip();
+            $('.dataTables_filter input').attr("placeholder", "Search...");
+            $(".select2").select2();
+            $('.datepicker').bsdatepicker({
+                format: 'yyyy-mm-dd hh:mm',
+            });
+
+            $('.timepicker').timepicker();
+        });
+
+
+
+
+    </script>
+
+
+    @if (ViewBag.NotificationMessage != null)
+    {
+        <script>
+        $(function () {
+            var message = @(Html.Raw(Json.Encode(ViewBag.NotificationMessage)));
+            if (message.IsViewMessage) {
+                Notify(message);
+            }
+        });
+        </script>
+    }
+    @if (TempData["NotificationMessage"] != null)
+    {
+        <script>
+        $(function () {
+            var message = @(Html.Raw(Json.Encode(TempData["NotificationMessage"])));
+            if (message.IsRedirectMessage) {
+                Notify(message);
+            }
+        });
+        </script>
+    }
+
+
     @RenderSection("scripts", false)
 </body>
 </html>

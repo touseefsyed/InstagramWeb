@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using InstagramWeb.Models.ViewModels;
+
 
 namespace InstagramWeb.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         // GET: Account
         public ActionResult Login()
@@ -16,23 +19,27 @@ namespace InstagramWeb.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Login(User obj)
+        public ActionResult Login(LoginRequest request)
         {
 
-            string UserName = "touseef";
-            string Password = "123";
+            var userQuery = ScheduleContext.Users.AsQueryable();
+            var userRequest = userQuery.Include(x=>x.Proxy).FirstOrDefault(x => x.Username == request.Username && x.Password == request.Password);
+            if (userRequest != null)
+            {
+                Session["User"] = new SessionUser(userRequest);
+                return RedirectToAction("ScheduleList", "Schedule");
+            }
+            Notify("Error", "Invalid Credentials", "Your credentials are invalid");
+            return View();
+        }
+  
 
-            if (obj.UserName == UserName && obj.Password == Password)
-            {
-                Session["UserName"] = obj.UserName.ToString();
-                return RedirectToAction("Dashboard", "Home");
-            }
-            else
-            {
-               ViewBag.Error = "Please Enter Valid User Name or Password";
-                return View("Login");
-            }
-          
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            Session.Abandon();
+            Session.Clear();
+            return RedirectToAction("Login", "Account");
         }
     }
 }

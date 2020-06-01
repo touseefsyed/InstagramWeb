@@ -1,0 +1,211 @@
+﻿@using InstagramWeb.Models
+@using Roles = InstagramWeb.Models.Roles
+@model InstagramWeb.Models.Schedule
+
+
+
+@{
+    ViewBag.Title = "AddSchedule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userList = ViewBag.UserList as List<User>;
+    var user = Session["User"] as SessionUser;
+    List<string> ImageExtensions = new List<string> { ".JPG", ".JPE", ".BMP", ".GIF", ".PNG" };
+
+}
+
+
+
+
+<section class="content" style="margin-top:10px">
+    <div class="container-fluid">
+        
+        @using (Html.BeginForm("AddSchedule", "Schedule", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+        <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3 class="card-title">GetFruity - Schedules</h3>
+                            <div class="float-right">
+                            
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                @Html.HiddenFor(x => x.Exception)
+                                @Html.HiddenFor(x => x.JobId)
+                                @Html.HiddenFor(x => x.PostedStatus)
+                                @Html.HiddenFor(x => x.Id)
+                                @Html.HiddenFor(x => x.ImagePath)
+                                @Html.HiddenFor(x=>x.LastTryDate)
+
+                                @Html.LabelFor(x => x.Caption)
+                                @Html.ValidationMessageFor(x => x.Caption, null, new { @class = "text-danger" })
+                                <div class="input-group col-md-8">
+                                    @Html.TextAreaFor(x => x.Caption, new { @class = "form-control", placeholder = "Caption" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.TimeStamp)
+                                @Html.ValidationMessageFor(x => x.TimeStamp, null, new { @class = "text-danger" })
+                                <div class="input-group col-md-8">
+                                    @Html.TextBoxFor(x => x.TimeStamp, new { Id= "dateInput", @class = "form-control mask", placeholder = "Scheduled At", data_mask_placeholder="yyyy-mm-dd hh:mm", data_mask="yyyy-mm-dd hh:mm", type="datetime", Value=Model.TimeStamp == new DateTime() ? DateTime.Now.ToString("yyyy-MM-dd hh:mm") : Model.TimeStamp.ToString("yyyy-MM-dd hh:mm") })
+                                </div>
+                            </div>
+                            
+                            @if (user.RoleId == (int) Roles.Admin)
+                            {
+                                <div class="form-group">
+                                    @Html.LabelFor(x => x.UserId)
+                                    @Html.ValidationMessageFor(x => x.UserId, null, new { @class = "text-danger" })
+                                    <div class="input-group col-md-8">
+                                        <select class="form-control" name="UserId" id="UserId">
+                                            @foreach (var item in userList)
+                                            {
+                                                <option @(Model.UserId == item.Id ? "selected" : "") value="@item.Id">@item.Username</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                @Html.HiddenFor(x=>x.UserId, new {Value = user.Id})
+                            }
+
+
+
+
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="pull-right">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>Media</label>
+                                                    <input type="file" multiple name="ImageFile" id="AlbumPhotos" data-src="#ImagesDiv">
+                                                </div>
+                                                <div class="col-md-12" id="ImagesDiv" style="min-height: 150px">
+                                                    @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                                                    {
+                                                        if (ImageExtensions.Contains(Path.GetExtension(Model.ImagePath).ToUpperInvariant()))
+                                                        {
+                                                            <img style="width:150px" src="@Url.Content(Model.ImagePath)" />
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <video width="400" controls>
+                                                                <source src="@Url.Content(Model.ImagePath)" id="video_here">
+                                                                Your browser does not support HTML5 video.
+                                                            </video>
+                                                        }
+
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="float-right">
+                        <a href="@Url.Action("ScheduleList", "Schedule")" role="button" class="btn btn-default">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        <!-- /.card -->
+        }
+    </div>
+</section>
+
+<!--
+    
+
+<img src="" style="width: 150px" onerror="this.src = 'https://via.placeholder.com/150'"/>
+<video width="400" controls>
+    <source src="" id="video_here">
+    Your browser does not support HTML5 video.
+</video>
+
+-->
+@section scripts{
+
+    <script>
+
+        $('#dateInput').inputmask("9999-99-99 99:99", { "placeholder": "yyyy-mm-dd hh:mm" });
+
+        $("#AlbumPhotos").change(function() {
+            readURL(this);
+        });
+
+        function getFileType(file) {
+            if (file.type.match('image.*'))
+                return 'image';
+            if (file.type.match('video.*'))
+                return 'video';
+            if (file.type.match('audio.*'))
+                return 'audio';
+            // etc...
+
+            return 'other';
+        }
+
+
+
+        function readURL(input) {
+
+            var id = $(input).data("src");
+            if (input.files && input.files[0]) {
+                var fileType = getFileType(input.files[0]);
+
+                var filesAmount = input.files.length;
+                for (i = 0; i < filesAmount; i++) {
+                    var reader = new FileReader();
+                    $(id).html('');
+                    reader.onload = function(event) {
+                        if (fileType == "image") {
+                            $($.parseHTML('<img style="width:150px">')).attr('src', event.target.result).appendTo(id);
+                        } else if (fileType == "video") {
+                            var $source = $.parseHTML(`<video width="400" controls>
+                                                      <source src="" id="video_here">
+                                                      Your browser does not support HTML5 video.
+                                                  </video>`);
+                            $source[0].src = URL.createObjectURL(input.files[0]);
+                            // $source.load();
+                            $($source).appendTo(id);
+                        }
+                    }
+                    reader.readAsDataURL(input.files[i]);
+                }
+            }
+        }
+
+
+        $("#VideoFile").change(function(evt) {
+            debugger;
+            var $source = $('#video_here');
+            $source[0].src = URL.createObjectURL(this.files[0]);
+            $source.parent()[0].load();
+        });
+
+
+    </script>
+
+}

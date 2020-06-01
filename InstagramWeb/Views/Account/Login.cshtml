@@ -1,4 +1,4 @@
-﻿@model InstagramWeb.Models.User
+﻿@model InstagramWeb.Models.ViewModels.LoginRequest
 @{
     ViewBag.Title = "Login";
     Layout = null;
@@ -15,13 +15,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="@Url.Content("~/Content/plugins/fontawesome-free/css/all.min.css")" />
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <link rel="stylesheet" href="@Url.Content("~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css")" />
     <!-- Theme style -->
-    <link rel="stylesheet" href="~/Content/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="@Url.Content("~/Content/dist/css/adminlte.min.css")" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <style>
@@ -37,8 +37,8 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-
-            <img src="~/Content/dist/img/G.png" alt="Login Logo" class="loginlogo ">
+         
+            <img src="@Url.Content("~/Posts/Default/logo.jpg")" alt="Login Logo" class="loginlogo ">
         </div>
         <!-- /.login-logo -->
         <div class="card">
@@ -51,9 +51,9 @@
 
                 <form action="@Url.Action("Login", "Account")" method="post">
 
-                    @Html.ValidationMessageFor(x => x.UserName, null, new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(x => x.Username, null, new { @class = "text-danger" })
                     <div class="input-group mb-3">
-                        @Html.TextBoxFor(x => x.UserName, new { @class = "form-control", placeholder = "Enter your User Name" })
+                        @Html.TextBoxFor(x => x.Username, new { @class = "form-control", placeholder = "Enter your User Name" })
 
                         <div class="input-group-append">
                             <div class="input-group-text">
@@ -71,29 +71,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-
-                    </div>
+             
                     <!-- /.col -->
                     <div class="col-6">
                         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                     </div>
                     <!-- /.col -->
-            </div>
-            </form>
+                
+                    </form>
 
             
             <!-- /.social-auth-links -->
             <!-- /.login-card-body -->
+            </div>
         </div>
     </div>
     <!-- /.login-box -->
     <!-- jQuery -->
-    <script src="~/Content/plugins/jquery/jquery.min.js"></script>
+    <script src="@Url.Content("~/Content/plugins/jquery/jquery.min.js")"></script>
     <!-- Bootstrap 4 -->
-    <script src="~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="@Url.Content("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js")"></script>
     <!-- AdminLTE App -->
-    <script src="~/Content/dist/js/adminlte.min.js"></script>
+    <script src="@Url.Content("~/Content/dist/js/adminlte.min.js")"></script>
 
 </body>
 </html>
