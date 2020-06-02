@@ -20,7 +20,7 @@
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.HiddenFor(x => x.Id)
                                             @Html.LabelFor(x => x.Name)
@@ -28,11 +28,27 @@
                                             @Html.ValidationMessageFor(x => x.Name)
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             @Html.LabelFor(x => x.Country)
                                             @Html.TextBoxFor(x => x.Country, new { @class = "form-control", placeholder = "Country" })
                                             @Html.ValidationMessageFor(x => x.Country)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Username)
+                                            @Html.TextBoxFor(x => x.Username, new { @class = "form-control", placeholder = "Username" })
+                                            @Html.ValidationMessageFor(x => x.Username)
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(x => x.Password)
+                                            @Html.TextBoxFor(x => x.Password, new { @class = "form-control", placeholder = "Password" })
+                                            @Html.ValidationMessageFor(x => x.Password)
                                         </div>
                                     </div>
                                     <div class="col-md-4">

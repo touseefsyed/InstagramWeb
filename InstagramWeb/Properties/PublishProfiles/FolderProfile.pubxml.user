@@ -37,10 +37,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/15/2020 11:31:00</publishTime>
     </File>
     <File Include="bin/InstagramWeb.dll">
-      <publishTime>05/29/2020 03:52:36</publishTime>
+      <publishTime>06/03/2020 01:30:21</publishTime>
     </File>
     <File Include="bin/InstagramWeb.pdb">
-      <publishTime>05/29/2020 03:52:36</publishTime>
+      <publishTime>06/03/2020 01:30:21</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNetCore.WebUtilities.dll">
       <publishTime>02/20/2018 20:41:26</publishTime>
@@ -5553,6 +5553,57 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Posts/Default/logo.jpg">
       <publishTime>05/27/2020 22:32:07</publishTime>
     </File>
+    <File Include="Public/Files/Default/default-poster.png">
+      <publishTime>05/18/2020 00:04:28</publishTime>
+    </File>
+    <File Include="Public/Files/Default/user-male-icon.png">
+      <publishTime>02/09/2020 23:29:06</publishTime>
+    </File>
+    <File Include="Public/Files/ProfileImages/0_.jpg">
+      <publishTime>06/02/2020 02:08:36</publishTime>
+    </File>
+    <File Include="Public/Files/ProfileImages/10_.jpg">
+      <publishTime>02/12/2020 18:20:16</publishTime>
+    </File>
+    <File Include="Public/Files/ProfileImages/10_.png">
+      <publishTime>02/12/2020 18:21:49</publishTime>
+    </File>
+    <File Include="Public/Files/ProfileImages/37_.png">
+      <publishTime>05/17/2020 06:49:27</publishTime>
+    </File>
+    <File Include="Public/Files/ProfileImages/43_.jfif">
+      <publishTime>05/23/2020 11:22:22</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/0_.jfif">
+      <publishTime>05/23/2020 06:56:31</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/0_.jpg">
+      <publishTime>05/23/2020 12:53:39</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/0_.png">
+      <publishTime>05/18/2020 00:09:38</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/5_.jpg">
+      <publishTime>05/23/2020 13:01:45</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/6_.jpg">
+      <publishTime>05/23/2020 13:02:00</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/7_.jpg">
+      <publishTime>05/23/2020 13:02:13</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/8_.jpg">
+      <publishTime>05/23/2020 13:02:25</publishTime>
+    </File>
+    <File Include="Public/Files/ShowImages/9_.jpg">
+      <publishTime>05/23/2020 13:02:38</publishTime>
+    </File>
+    <File Include="Public/Icons/211919711Untitled-3-512-sold.png">
+      <publishTime>02/19/2020 01:08:09</publishTime>
+    </File>
+    <File Include="Public/Icons/211919711Untitled-3-512.png">
+      <publishTime>02/19/2020 01:01:06</publishTime>
+    </File>
     <File Include="Scripts/bootstrap-datetimepicker.js">
       <publishTime>05/27/2020 23:52:24</publishTime>
     </File>
@@ -5607,6 +5658,18 @@ by editing this MSBuild file. In order to learn more about this please visit htt
     <File Include="Scripts/jquery-3.4.1.slim.min.map">
       <publishTime>05/23/2020 21:27:43</publishTime>
     </File>
+    <File Include="Scripts/jquery.validate.js">
+      <publishTime>05/14/2020 23:30:29</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.min.js">
+      <publishTime>05/14/2020 23:30:28</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.js">
+      <publishTime>05/14/2020 23:30:29</publishTime>
+    </File>
+    <File Include="Scripts/jquery.validate.unobtrusive.min.js">
+      <publishTime>05/14/2020 23:30:29</publishTime>
+    </File>
     <File Include="Scripts/modernizr-2.8.3.js">
       <publishTime>05/23/2020 21:27:43</publishTime>
     </File>
@@ -5623,16 +5686,28 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/27/2020 23:52:23</publishTime>
     </File>
     <File Include="Views/Account/Login.cshtml">
-      <publishTime>05/27/2020 22:33:49</publishTime>
+      <publishTime>06/01/2020 22:36:52</publishTime>
+    </File>
+    <File Include="Views/Proxy/AddProxy.cshtml">
+      <publishTime>06/03/2020 00:20:42</publishTime>
+    </File>
+    <File Include="Views/Proxy/ProxyList.cshtml">
+      <publishTime>06/02/2020 01:49:16</publishTime>
     </File>
     <File Include="Views/Schedule/AddSchedule.cshtml">
-      <publishTime>05/28/2020 22:32:45</publishTime>
+      <publishTime>06/02/2020 01:59:15</publishTime>
     </File>
     <File Include="Views/Schedule/ScheduleList.cshtml">
-      <publishTime>05/28/2020 23:35:49</publishTime>
+      <publishTime>06/02/2020 02:07:57</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>05/28/2020 23:53:17</publishTime>
+      <publishTime>06/02/2020 00:37:49</publishTime>
+    </File>
+    <File Include="Views/User/AddUser.cshtml">
+      <publishTime>06/02/2020 01:57:30</publishTime>
+    </File>
+    <File Include="Views/User/UserList.cshtml">
+      <publishTime>06/03/2020 00:33:18</publishTime>
     </File>
     <File Include="Views/web.config">
       <publishTime>05/23/2020 21:27:43</publishTime>

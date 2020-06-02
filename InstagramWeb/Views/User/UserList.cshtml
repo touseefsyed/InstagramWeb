@@ -75,18 +75,21 @@
             <div class="card-body">
                 <table class="table table-bordered table-striped datatable">
                     <thead>
-                        <tr>
-                            <th>FirstName</th>
-                            <th>LastName</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
+                    <tr>
+                        <th>Username</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
                     </thead>
                     <tbody>
                         @foreach (var user in Model.Users)
                         {
                             <tr>
+
+                                <td>@user.Username</td>
                                 <td>@user.FirstName</td>
                                 <td>@user.LastName</td>
                                 <td>@user.Email</td>
@@ -94,7 +97,7 @@
                                 <td>
                                     @if (sessionUser.RoleId == (int)Roles.Admin)
                                     {
-                                        <a href="@Url.RouteUrl("AddUser", new { ID = user.Id})"><i class="fa fa-edit text-default"></i></a>
+                                        <a href="@Url.RouteUrl("AddUser", new {ID = user.Id})"><i class="fa fa-edit text-default"></i></a>
                                         <a href="#" data-id="@user.Id" class="deleteUserBtn"><i class="fa fa-trash text-danger"></i></a>
                                         <a href="#" data-id="@user.Id" class="blockUserBtn"><i class="fa fa-ban @(user.InActive ? "text-danger" : "text-secondaary")" aria-hidden="true"></i></a>
 

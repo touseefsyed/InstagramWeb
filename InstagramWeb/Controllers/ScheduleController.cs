@@ -284,7 +284,6 @@ for (var i = 0; i < btnList.length; i++)
 
         public static async Task AutomaticPosts(int scheduleId = 0)
         {
-            
             string k = string.Empty;
             try
             {
@@ -304,16 +303,20 @@ for (var i = 0; i < btnList.length; i++)
                 }
 
                 string Url = "https://www.instagram.com/";
-
                 var browerFetcher = new BrowserFetcher();
                 await browerFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
                 foreach (var schedule in schedules)
-                { 
+                {
                     bool proxy = schedule.User.Proxy != null;
+
+                    if (proxy)
+                    {
+                      
+                    }
+
                     using (var browser = Puppeteer.LaunchAsync(new LaunchOptions
                     {
-                        
-                        Args = proxy ? new string[1] { $"--proxy-server={schedule.User.Proxy.IpAddress}" } : new string[0] { },
+                        Args = proxy ? new string[2] { $"--proxy-server={schedule.User.Proxy.IpAddress}", "--ignore-certificate-errors" } : new string[0] { },
                         ExecutablePath = browerFetcher.GetExecutablePath(BrowserFetcher.DefaultRevision),
                         Headless = false,
                         Timeout = 120000
@@ -326,10 +329,27 @@ for (var i = 0; i < btnList.length; i++)
 
                         try
                         {
+                            if (!string.IsNullOrWhiteSpace(schedule.User.Proxy.Username))
+                            {
+                                var credentials = new Credentials
+                                {
+                                    Password =  schedule.User.Proxy.Password,
+                                    Username = schedule.User.Proxy.Username
+                                };
+                                await page.AuthenticateAsync(credentials);
+                            }
+
                             await page.GoToAsync(Url);
                             string html = await page.GetContentAsync();
                             System.Threading.Thread.Sleep(5000);
+                            if (html.Contains("coreSpriteDismissLarge"))
+                            {
+                                await page.EvaluateExpressionAsync(ClickButton("Close"));
+                                System.Threading.Thread.Sleep(2000);
+                            }
+
                             await page.EvaluateExpressionAsync(ClickButton("Log In"));
+                        
 
                             System.Threading.Thread.Sleep(5000);
                             for (int i = 0; i < 4; i++)
@@ -342,22 +362,27 @@ for (var i = 0; i < btnList.length; i++)
                             await page.Keyboard.TypeAsync(schedule.User.InstagramPassword, new TypeOptions { Delay = 200 });
                         
                             await page.EvaluateExpressionAsync(ClickButton("Log In", true));
-                            System.Threading.Thread.Sleep(5000);
+                            System.Threading.Thread.Sleep(500);
                             await page.WaitForNavigationAsync();
-
+                            System.Threading.Thread.Sleep(5000);
+                            
                             await page.EvaluateExpressionAsync(ClickButton("Save Info"));
-                            System.Threading.Thread.Sleep(5000);
+                            System.Threading.Thread.Sleep(500);
                             await page.WaitForNavigationAsync();
-                            System.Threading.Thread.Sleep(2000);
+                            System.Threading.Thread.Sleep(5000);
+
                             await page.EvaluateExpressionAsync(ClickButton("Cancel"));
+                            System.Threading.Thread.Sleep(2000);
+                            
                             page.EvaluateExpressionAsync(@"document.querySelector(""div[data-testid=new-post-button]"").click()");
                             var fileChooser = await page.WaitForFileChooserAsync();
                             await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
+                            await page.WaitForNavigationAsync();
                             System.Threading.Thread.Sleep(5000);
 
                             await page.EvaluateExpressionAsync(ClickButton("Next"));
-                            System.Threading.Thread.Sleep(5000);
                             await page.WaitForNavigationAsync();
+                            System.Threading.Thread.Sleep(5000);
 
                             for (int i = 0; i < 4; i++)
                             {
@@ -367,8 +392,9 @@ for (var i = 0; i < btnList.length; i++)
                             await page.Keyboard.TypeAsync(schedule.Caption, new TypeOptions { Delay = 200 });
 
                             await page.EvaluateExpressionAsync(ClickButton("Share"));
-                            System.Threading.Thread.Sleep(5000);
+                            System.Threading.Thread.Sleep(500);
                             await page.WaitForNavigationAsync();
+                            System.Threading.Thread.Sleep(5000);
 
                             schedule.PostedStatus = true;
                             schedule.LastTryDate = DateTime.Now;
@@ -385,6 +411,7 @@ for (var i = 0; i < btnList.length; i++)
                         await browser.DisposeAsync();
                         browser.Disconnected += (sender, args) =>
                         {
+                            #if !DEBUG
                             try
                             {
                                 foreach (var process in Process.GetProcessesByName("chrome"))
@@ -396,6 +423,7 @@ for (var i = 0; i < btnList.length; i++)
                             {
 
                             }
+                            #endif
 
                         };
                         await ScheduleContext.SaveChangesAsync();

@@ -1968,6 +1968,10 @@
     <Compile Include="Migrations\202006011829409_ScheduleUser.Designer.cs">
       <DependentUpon>202006011829409_ScheduleUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006021921583_Proxies.cs" />
+    <Compile Include="Migrations\202006021921583_Proxies.Designer.cs">
+      <DependentUpon>202006021921583_Proxies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChromeBot.cs" />
     <Compile Include="Models\NotificationMessage.cs" />
@@ -2134,6 +2138,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006011829409_ScheduleUser.resx">
       <DependentUpon>202006011829409_ScheduleUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006021921583_Proxies.resx">
+      <DependentUpon>202006021921583_Proxies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

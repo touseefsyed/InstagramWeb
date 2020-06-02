@@ -49,11 +49,11 @@ namespace InstagramWeb.Controllers
 
             if (proxy.Id == 0)
             {
-                Notify("Success", "Successfully Added", "Proxy Added Successfully");
+                Notify("Success", "Successfully Added", "Proxy Added Successfully", IsRedirectMessage:true);
             }
             else
             {
-                Notify("Success", "Successfully Updated", "Proxy Updated Successfully");
+                Notify("Success", "Successfully Updated", "Proxy Updated Successfully", IsRedirectMessage: true);
 
             }
             return RedirectToAction("AddProxy", "Proxy");

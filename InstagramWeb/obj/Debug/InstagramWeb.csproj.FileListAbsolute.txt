@@ -214,3 +214,4 @@ C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Mig
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Users.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Users1.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.ScheduleUser.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Proxies.resources
