@@ -15,10 +15,10 @@ using InstagramWeb.Models.ViewModels;
 namespace InstagramWeb.Controllers
 {
     using Roles = Models.Roles;
-    [Role((int)Roles.Admin)]
     public class UserController : PanelController
     {
         [HttpGet]
+        [Role((int)Roles.Admin)]
         public ActionResult UserList(User UserFilter)
         {
             if (UserFilter == null)
@@ -56,7 +56,6 @@ namespace InstagramWeb.Controllers
         {
             var proxies = ScheduleContext.Proxies.ToList();
             
-
             ViewBag.Profile = Profile;
             if (Profile)
             {
@@ -68,8 +67,6 @@ namespace InstagramWeb.Controllers
             if (Id != 0)
             {
                 var user = ScheduleContext.Users.FirstOrDefault(x => x.Id == Id);
-                
-
                 userVm = new RegisterRequest
                 {
                     Username = user.Username,
@@ -97,6 +94,7 @@ namespace InstagramWeb.Controllers
             if (Profile)
             {
                 UserVm.RoleId = user.RoleId;
+                UserVm.Id = user.Id;
             }
 
             if (ModelState.IsValid)
@@ -142,7 +140,8 @@ namespace InstagramWeb.Controllers
 
 
         [HttpPost]
-        
+
+        [Role((int)Roles.Admin)]
         public bool DeleteUser(int UserId)
         {
             var user = ScheduleContext.Users.FirstOrDefault(x => x.Id == UserId);
@@ -155,7 +154,8 @@ namespace InstagramWeb.Controllers
             return true;
         }
         [HttpPost]
-        
+
+        [Role((int)Roles.Admin)]
         public bool ToggleBlockUser(int UserId)
         {
             var user = ScheduleContext.Users.FirstOrDefault(x => x.Id == UserId);

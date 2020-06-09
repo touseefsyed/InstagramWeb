@@ -29,8 +29,8 @@ namespace InstagramWeb.Controllers
                 Session["User"] = new SessionUser(userRequest);
                 return RedirectToAction("ScheduleList", "Schedule");
             }
-            Notify("Error", "Invalid Credentials", "Your credentials are invalid");
-            return View();
+            Notify("Error", "Invalid Credentials", "Your credentials are invalid", IsRedirectMessage:true);
+            return RedirectToAction("Login", "Account");
         }
   
 

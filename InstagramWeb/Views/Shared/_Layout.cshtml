@@ -371,7 +371,7 @@
     @if (ViewBag.NotificationMessage != null)
     {
         <script>
-        $(function () {
+            $(function () {
             var message = @(Html.Raw(Json.Encode(ViewBag.NotificationMessage)));
             if (message.IsViewMessage) {
                 Notify(message);
@@ -382,7 +382,9 @@
     @if (TempData["NotificationMessage"] != null)
     {
         <script>
-        $(function () {
+            $(function () {
+
+                console.log("tempdata");
             var message = @(Html.Raw(Json.Encode(TempData["NotificationMessage"])));
             if (message.IsRedirectMessage) {
                 Notify(message);

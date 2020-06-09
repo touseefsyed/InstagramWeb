@@ -30,13 +30,7 @@ namespace InstagramWeb.Filters
             {
                 if (!this.type.Contains(user.RoleId))
                 {
-                    if (controller.Request.Cookies["KMGQQMK"] != null)
-                    {
-                        var c = controller.Request.Cookies["KMGQQMK"];
-                        c.Expires = DateTime.Now.AddDays(-1);
-                        controller.Response.Cookies.Add(c);
-                    }
-                    filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary { { "action", "Permissions" }, { "controller", "Account" } });
+                    filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary { { "action", "Login" }, { "controller", "Account" } });
                 }
             }
         }

@@ -28,6 +28,7 @@
             this.RoleId = user.RoleId;
             this.EmailVerified = user.EmailVerified;
             this.InActive = user.InActive;
+            this.ImagePath = user.ImagePath;
             this.InstagramPassword = user.InstagramPassword;
             this.InstagramUsername = user.InstagramUsername;
             if (user.Proxy != null)

@@ -57,6 +57,11 @@ namespace InstagramWeb.Controllers
         [HttpPost]
         public ActionResult AddSchedule(Schedule obj)
         {
+            obj.TimeStamp = obj.TimeStamp.ToUniversalTime();
+            if (obj.LastTryDate != null)
+            {
+                obj.LastTryDate = ((DateTime) obj.LastTryDate).ToUniversalTime();
+            }
 
             string mode = "";
             if (obj.Id == 0)
@@ -309,10 +314,6 @@ for (var i = 0; i < btnList.length; i++)
                 {
                     bool proxy = schedule.User.Proxy != null;
 
-                    if (proxy)
-                    {
-                      
-                    }
 
                     using (var browser = Puppeteer.LaunchAsync(new LaunchOptions
                     {
@@ -373,32 +374,42 @@ for (var i = 0; i < btnList.length; i++)
 
                             await page.EvaluateExpressionAsync(ClickButton("Cancel"));
                             System.Threading.Thread.Sleep(2000);
-                            
-                            page.EvaluateExpressionAsync(@"document.querySelector(""div[data-testid=new-post-button]"").click()");
-                            var fileChooser = await page.WaitForFileChooserAsync();
-                            await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
-                            await page.WaitForNavigationAsync();
-                            System.Threading.Thread.Sleep(5000);
 
-                            await page.EvaluateExpressionAsync(ClickButton("Next"));
-                            await page.WaitForNavigationAsync();
-                            System.Threading.Thread.Sleep(5000);
-
-                            for (int i = 0; i < 4; i++)
+                            if (schedule.Type == "Story")
                             {
-                                await page.Keyboard.DownAsync(key: "Tab");
-                                System.Threading.Thread.Sleep(500);
+
                             }
-                            await page.Keyboard.TypeAsync(schedule.Caption, new TypeOptions { Delay = 200 });
+                            else
+                            {
 
-                            await page.EvaluateExpressionAsync(ClickButton("Share"));
-                            System.Threading.Thread.Sleep(500);
-                            await page.WaitForNavigationAsync();
-                            System.Threading.Thread.Sleep(5000);
+                                page.EvaluateExpressionAsync(@"document.querySelector(""div[data-testid=new-post-button]"").click()");
+                                var fileChooser = await page.WaitForFileChooserAsync();
+                                await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
+                                await page.WaitForNavigationAsync();
+                                System.Threading.Thread.Sleep(5000);
 
-                            schedule.PostedStatus = true;
-                            schedule.LastTryDate = DateTime.Now;
-                            schedule.Exception = "";
+                                await page.EvaluateExpressionAsync(ClickButton("Next"));
+                                await page.WaitForNavigationAsync();
+                                System.Threading.Thread.Sleep(5000);
+
+                                for (int i = 0; i < 4; i++)
+                                {
+                                    await page.Keyboard.DownAsync(key: "Tab");
+                                    System.Threading.Thread.Sleep(500);
+                                }
+                                await page.Keyboard.TypeAsync(schedule.Caption, new TypeOptions { Delay = 200 });
+
+                                await page.EvaluateExpressionAsync(ClickButton("Share"));
+                                System.Threading.Thread.Sleep(500);
+                                await page.WaitForNavigationAsync();
+                                System.Threading.Thread.Sleep(5000);
+
+                                schedule.PostedStatus = true;
+                                schedule.LastTryDate = DateTime.Now;
+                                schedule.Exception = "";
+                            }
+
+                            
 
                         }
                         catch (Exception ex)

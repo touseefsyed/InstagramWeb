@@ -1,4 +1,5 @@
 ﻿@using System.Diagnostics.Eventing.Reader
+@using System.Globalization
 @using InstagramWeb.Models
 @using Roles = InstagramWeb.Models.Roles
 @model List<InstagramWeb.Models.Schedule>
@@ -62,7 +63,13 @@
                                     }
 
                                 </td>
-                                <td>@Show.TimeStamp.ToString("yyyy-MM-dd hh:mm tt")</td>
+                                <td class="time">
+                                    @*@Show.TimeStamp.ToString("yyyy-MM-dd hh:mm tt")
+                                                                2011-06-29T16:52:48.000Z
+                                    *@
+
+                                    @Show.TimeStamp.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture)
+                                </td>
                                 <td>
                                     @{
                                         if (Show.PostedStatus == null)
@@ -104,22 +111,38 @@
 @section scripts
 {
     <script>
+
+        $(".time").each(function() {
+            var utctimeval = $(this).text().trim();
+            console.log(utctimeval);
+            var date = new Date(utctimeval);
+            $(this).html(date.toLocaleString());
+            console.log(date);
+            var formatedDate = moment(date).format("YYYY-MM-DD HH:mm");
+            console.log(formatedDate);
+            $(this).html(formatedDate);
+
+        });
+
         var y;
-        $(".retryBtn").click(function () {
+        $(".retryBtn").click(function() {
             var el = this;
             var id = $(this).data("id");
             bootbox.confirm("Are you sure you want to retry posting this ?",
-                function (result) {
+                function(result) {
 
                     if (result) {
                         bootbox.alert("this process might take upto 5 minutes. Please either wait or come back later to this page to notice a status change.");
-                        $.post("@Url.Action("SchedulePost", "Schedule")", { ScheduleId: id },
+                        $.post("@Url.Action("SchedulePost", "Schedule")",
+                            { ScheduleId: id },
                             function(resp) {
                                 window.location.reload();
                             });
                     }
                 });
         });
+
+      
 
         $(".deleteScheduleBtn").click(function() {
             var id = $(this).data("id");

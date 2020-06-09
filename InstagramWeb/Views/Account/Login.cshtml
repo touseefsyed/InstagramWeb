@@ -19,25 +19,29 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- icheck bootstrap -->
+
     <link rel="stylesheet" href="@Url.Content("~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css")" />
     <!-- Theme style -->
     <link rel="stylesheet" href="@Url.Content("~/Content/dist/css/adminlte.min.css")" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <link href="@Url.Content("~/Content/plugins/jquery-toast/dist/jquery.toast.min.css")" rel="stylesheet" />
+
     <style>
         .loginlogo {
             width: 200px !important;
         }
-    .loginbackground {
-        background-color: '#ffd1ef' !important;
 
-    }
+        .login-page {
+            background-color: #FED6F0 !important;
+        }
+
     </style>
 </head>
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-         
+
             <img src="@Url.Content("~/Posts/Default/logo.jpg")" alt="Login Logo" class="loginlogo ">
         </div>
         <!-- /.login-logo -->
@@ -46,7 +50,7 @@
                 <p class="login-box-msg">Sign in to start your session</p>
                 <div class="form-group">
                     <div class="text-danger">@ViewBag.Error</div>
-              
+
                 </div>
 
                 <form action="@Url.Action("Login", "Account")" method="post">
@@ -71,18 +75,18 @@
                             </div>
                         </div>
                     </div>
-             
+
                     <!-- /.col -->
                     <div class="col-6">
                         <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                     </div>
                     <!-- /.col -->
-                
-                    </form>
 
-            
-            <!-- /.social-auth-links -->
-            <!-- /.login-card-body -->
+                </form>
+
+
+                <!-- /.social-auth-links -->
+                <!-- /.login-card-body -->
             </div>
         </div>
     </div>
@@ -93,6 +97,67 @@
     <script src="@Url.Content("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js")"></script>
     <!-- AdminLTE App -->
     <script src="@Url.Content("~/Content/dist/js/adminlte.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/jquery-toast/dist/jquery.toast.min.js")"></script>
+    <script>
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+
+        function Notify(message, position = "top-right") {
+            var theme = "";
+            if (message.MessageType == "Success") {
+                theme = "bg-green";
+            } else if (message.MessageType == "Error") {
+                theme = "bg-red";
+            } else if (message.MessageType == "Warning") {
+                theme = "bg-orange";
+            } else if (message.MessageType == "Info") {
+                theme = "bg-blue-alt";
+            }
+
+            $.toast({
+                heading: message.MessageType,
+                text: message.Description,
+                showHideTransition: 'plain',
+                icon: message.MessageType.toLowerCase(),
+                position: 'bottom-right',
+            });
+
+        }
+
+
+
+
+    </script>
+
+
+    @if (ViewBag.NotificationMessage != null)
+    {
+        <script>
+        $(function () {
+            var message = @(Html.Raw(Json.Encode(ViewBag.NotificationMessage)));
+            if (message.IsViewMessage) {
+                Notify(message);
+            }
+        });
+        </script>
+    }
+    @if (TempData["NotificationMessage"] != null)
+    {
+        <script>
+        $(function () {
+
+            console.log("tempdata");
+            var message = @(Html.Raw(Json.Encode(TempData["NotificationMessage"])));
+            if (message.IsRedirectMessage) {
+                Notify(message);
+            }
+        });
+        </script>
+    }
+
+
 
 </body>
 </html>

@@ -1,4 +1,5 @@
-﻿@using InstagramWeb.Models
+﻿@using System.Globalization
+@using InstagramWeb.Models
 @using Roles = InstagramWeb.Models.Roles
 @model InstagramWeb.Models.Schedule
 
@@ -55,8 +56,8 @@
                             <div class="form-group">
                                 @Html.LabelFor(x => x.TimeStamp)
                                 @Html.ValidationMessageFor(x => x.TimeStamp, null, new { @class = "text-danger" })
-                                <div class="input-group col-md-8">
-                                    @Html.TextBoxFor(x => x.TimeStamp, new { Id= "dateInput", @class = "form-control mask", placeholder = "Scheduled At", data_mask_placeholder="yyyy-mm-dd hh:mm", data_mask="yyyy-mm-dd hh:mm", type="datetime", Value=Model.TimeStamp == new DateTime() ? DateTime.Now.ToString("yyyy-MM-dd hh:mm") : Model.TimeStamp.ToString("yyyy-MM-dd hh:mm") })
+                                <div class="input-group col-md-8 ">
+                                    @Html.TextBoxFor(x => x.TimeStamp, new { Id= "dateInput", @class = "form-control mask utcTime", placeholder = "Scheduled At", data_mask_placeholder="yyyy-mm-dd hh:mm:ss", data_mask="yyyy-mm-dd hh:mm:ss", type="text", Value=Model.TimeStamp == new DateTime() ? DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture) : Model.TimeStamp.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture) })
                                 </div>
                             </div>
                             
@@ -148,6 +149,18 @@
 @section scripts{
 
     <script>
+
+        $(".utcTime").each(function() {
+            var utctimeval = $(this).val().trim();
+            console.log(utctimeval);
+            var date = new Date(utctimeval);
+            console.log(date);
+            var formatedDate = moment(date).format("YYYY-MM-DD HH:mm");
+            console.log(formatedDate);
+            $(this).val(formatedDate);
+
+        });
+
 
         $('#dateInput').inputmask("9999-99-99 99:99", { "placeholder": "yyyy-mm-dd hh:mm" });
 
