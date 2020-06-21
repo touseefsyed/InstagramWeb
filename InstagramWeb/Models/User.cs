@@ -37,6 +37,12 @@ namespace InstagramWeb.Models
         public string InstagramUsername { get; set; }
         public string InstagramPassword { get; set; }
 
+        public string InstagramUserId { get; set; }
+        public string InstagramAuthToken { get; set; }
+        public string FacebookAuthToken { get; set; }
+        public string FacebookPageId { get; set; }
+
+
         public int? ProxyId { get; set; }
         [ForeignKey("ProxyId")]
         public Proxy Proxy { get; set; }

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web;
+using System.Web.Mvc;
 
 namespace InstagramWeb.Models
 {
@@ -19,6 +20,7 @@ namespace InstagramWeb.Models
         public DateTime TimeStamp { get; set; }
         public bool? PostedStatus { get; set; }
         public DateTime? LastTryDate { get; set; }
+        [AllowHtml]
         public string Exception { get; set; }
         public string Type { get; set; }
         public string JobId { get; set; }

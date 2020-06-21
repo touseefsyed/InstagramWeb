@@ -37,10 +37,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/15/2020 11:31:00</publishTime>
     </File>
     <File Include="bin/InstagramWeb.dll">
-      <publishTime>06/07/2020 22:18:30</publishTime>
+      <publishTime>06/22/2020 03:04:56</publishTime>
     </File>
     <File Include="bin/InstagramWeb.pdb">
-      <publishTime>06/07/2020 22:18:30</publishTime>
+      <publishTime>06/22/2020 03:04:56</publishTime>
     </File>
     <File Include="bin/Microsoft.AspNetCore.WebUtilities.dll">
       <publishTime>02/20/2018 20:41:26</publishTime>
@@ -5686,7 +5686,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/27/2020 23:52:23</publishTime>
     </File>
     <File Include="Views/Account/Login.cshtml">
-      <publishTime>06/06/2020 01:56:46</publishTime>
+      <publishTime>06/07/2020 22:22:11</publishTime>
+    </File>
+    <File Include="Views/Dashboard/Index.cshtml">
+      <publishTime>06/22/2020 02:56:20</publishTime>
     </File>
     <File Include="Views/Proxy/AddProxy.cshtml">
       <publishTime>06/03/2020 00:20:42</publishTime>
@@ -5695,13 +5698,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/02/2020 01:49:16</publishTime>
     </File>
     <File Include="Views/Schedule/AddSchedule.cshtml">
-      <publishTime>06/02/2020 01:59:15</publishTime>
+      <publishTime>06/10/2020 04:09:11</publishTime>
     </File>
     <File Include="Views/Schedule/ScheduleList.cshtml">
-      <publishTime>06/07/2020 22:04:28</publishTime>
+      <publishTime>06/10/2020 02:21:15</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>06/06/2020 01:51:34</publishTime>
+      <publishTime>06/22/2020 03:03:17</publishTime>
     </File>
     <File Include="Views/User/AddUser.cshtml">
       <publishTime>06/02/2020 01:57:30</publishTime>

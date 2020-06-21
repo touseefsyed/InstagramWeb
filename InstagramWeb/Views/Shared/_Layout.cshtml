@@ -95,7 +95,7 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
 
-            <a href="https://getfruity.co/" class="brand-link">
+            <a href="@Url.Action("ScheduleList", "Schedule")" class="brand-link">
                 <img src="@Url.Content("~/Posts/Default/logo.jpg")"
                      alt="Get Fruity"
                      class="brand-image img-circle elevation-3"
@@ -120,6 +120,13 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
     with font-awesome or any other icon font library -->
+
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Dashboard")" class="nav-link active">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>Dashboard</p>
+                            </a>
+                        </li>
 
                         @if (user.RoleId == (int)Roles.Admin)
                         {
@@ -232,6 +239,7 @@
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")"></script>
     <!-- Bootstrap 4 -->
     <script src="@Url.Content("~/Content/plugins/bootstrap/js/bootstrap.bundle.min.js")"></script>
+    <script src="@Url.Content("~/Content/plugins/chart.js/Chart.bundle.min.js")"></script>
     <!-- AdminLTE App -->
     <script src="@Url.Content("~/Content/dist/js/adminlte.min.js")"></script>
     <script src="@Url.Content("~/Content/plugins/jquery-toast/dist/jquery.toast.min.js")"></script>
@@ -318,6 +326,16 @@
             var encodedValue = $('<div />').text(value).html();
             return encodedValue;
         }
+
+        function Notify2(type, title, description) {
+            var message = {
+                MessageType: type,
+                Title: title,
+                Description: description
+            };
+            Notify(message);
+        }
+
 
         function Notify(message, position = "top-right") {
             var theme = "";

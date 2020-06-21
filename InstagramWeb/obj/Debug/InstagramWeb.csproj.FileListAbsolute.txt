@@ -185,7 +185,6 @@ C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\bin\System.Buffers.xml
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\bin\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\bin\System.Text.Encodings.Web.xml
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\bin\System.Threading.Tasks.Extensions.xml
-C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.csprojAssemblyReference.cache
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Instapost.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Instapost1.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\bin\Hangfire.Core.dll
@@ -215,3 +214,7 @@ C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Mig
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Users1.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.ScheduleUser.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Proxies.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.Story.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.csprojAssemblyReference.cache
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.AddedAuthToken.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.AddedAuthTokenFacebook.resources

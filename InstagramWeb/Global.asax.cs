@@ -72,7 +72,7 @@ namespace InstagramWeb
                 }
             }
 
-            RecurringJob.AddOrUpdate(() => AutomaticPost.AutomaticPosts(0), Cron.Daily);
+            RecurringJob.AddOrUpdate(() => AutomaticPost.AutomaticPosts(0,false), Cron.Hourly);
 
             yield return new BackgroundJobServer();
         }

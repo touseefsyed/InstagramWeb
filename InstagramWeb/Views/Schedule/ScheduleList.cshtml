@@ -64,11 +64,7 @@
 
                                 </td>
                                 <td class="time">
-                                    @*@Show.TimeStamp.ToString("yyyy-MM-dd hh:mm tt")
-                                                                2011-06-29T16:52:48.000Z
-                                    *@
-
-                                    @Show.TimeStamp.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture)
+                                    @Show.TimeStamp.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture)
                                 </td>
                                 <td>
                                     @{

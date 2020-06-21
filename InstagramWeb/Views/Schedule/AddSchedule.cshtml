@@ -20,7 +20,7 @@
 <section class="content" style="margin-top:10px">
     <div class="container-fluid">
         
-        @using (Html.BeginForm("AddSchedule", "Schedule", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("AddSchedule", "Schedule", FormMethod.Post, new { id="ScheduleForm", enctype = "multipart/form-data" }))
         {
         <div class="card">
                 <div class="card-header">
@@ -38,34 +38,48 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="row">
+                        @Html.HiddenFor(x => x.Exception)
+                        @Html.HiddenFor(x => x.JobId)
+                        @Html.HiddenFor(x => x.PostedStatus)
+                        @Html.HiddenFor(x => x.Id)
+                        @Html.HiddenFor(x => x.ImagePath)
+                        @Html.HiddenFor(x=>x.LastTryDate)
+                        
+                        <input type="hidden" value="" name="TimeStamp" id="STimeStamp" />
+                        <input type="hidden" name="Timezone" id="Timezone" />
                         <div class="col-md-8">
+                            
                             <div class="form-group">
-                                @Html.HiddenFor(x => x.Exception)
-                                @Html.HiddenFor(x => x.JobId)
-                                @Html.HiddenFor(x => x.PostedStatus)
-                                @Html.HiddenFor(x => x.Id)
-                                @Html.HiddenFor(x => x.ImagePath)
-                                @Html.HiddenFor(x=>x.LastTryDate)
-
-                                @Html.LabelFor(x => x.Caption)
-                                @Html.ValidationMessageFor(x => x.Caption, null, new { @class = "text-danger" })
+                                @Html.LabelFor(x => x.Type)
+                                @Html.ValidationMessageFor(x => x.Type, null, new {@class = "text-danger"})
                                 <div class="input-group col-md-8">
-                                    @Html.TextAreaFor(x => x.Caption, new { @class = "form-control", placeholder = "Caption" })
+                                    <select class="form-control" name="Type" id="Type" onchange="ToggleCaption()">
+                                        <option @(Model.Type == "Post" ? "selected" : "") value="Post">Post</option>
+                                        <option @(Model.Type == "Story" ? "selected" : "") value="Story">Story</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="CaptionGroup">
+                                @Html.LabelFor(x => x.Caption)
+                                @Html.ValidationMessageFor(x => x.Caption, null, new {@class = "text-danger"})
+                                <div class="input-group col-md-8">
+                                    @Html.TextAreaFor(x => x.Caption, new {@class = "form-control", placeholder = "Caption"})
                                 </div>
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(x => x.TimeStamp)
-                                @Html.ValidationMessageFor(x => x.TimeStamp, null, new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(x => x.TimeStamp, null, new {@class = "text-danger"})
                                 <div class="input-group col-md-8 ">
-                                    @Html.TextBoxFor(x => x.TimeStamp, new { Id= "dateInput", @class = "form-control mask utcTime", placeholder = "Scheduled At", data_mask_placeholder="yyyy-mm-dd hh:mm:ss", data_mask="yyyy-mm-dd hh:mm:ss", type="text", Value=Model.TimeStamp == new DateTime() ? DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture) : Model.TimeStamp.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture) })
+                                    @Html.TextBoxFor(x => x.TimeStamp, new {Id = "dateInput",Name="FakeTimeStamp", @class = "form-control mask utcTime", placeholder = "Scheduled At", data_mask_placeholder = "yyyy-mm-dd hh:mm:ss", data_mask = "yyyy-mm-dd hh:mm:ss", type = "text", Value = Model.TimeStamp == new DateTime() ? DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture) : Model.TimeStamp.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:sssZ", CultureInfo.InvariantCulture)})
                                 </div>
                             </div>
-                            
+
                             @if (user.RoleId == (int) Roles.Admin)
                             {
                                 <div class="form-group">
                                     @Html.LabelFor(x => x.UserId)
-                                    @Html.ValidationMessageFor(x => x.UserId, null, new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(x => x.UserId, null, new {@class = "text-danger"})
                                     <div class="input-group col-md-8">
                                         <select class="form-control" name="UserId" id="UserId">
                                             @foreach (var item in userList)
@@ -78,7 +92,7 @@
                             }
                             else
                             {
-                                @Html.HiddenFor(x=>x.UserId, new {Value = user.Id})
+                                @Html.HiddenFor(x => x.UserId, new {Value = user.Id})
                             }
 
 
@@ -101,7 +115,7 @@
                                                     {
                                                         if (ImageExtensions.Contains(Path.GetExtension(Model.ImagePath).ToUpperInvariant()))
                                                         {
-                                                            <img style="width:150px" src="@Url.Content(Model.ImagePath)" />
+                                                            <img style="width: 150px" src="@Url.Content(Model.ImagePath)"/>
 
                                                         }
                                                         else
@@ -149,6 +163,16 @@
 @section scripts{
 
     <script>
+        ToggleCaption();
+
+        function ToggleCaption() {
+            var val = $("#Type").val();
+            if (val == "Story") {
+                $("#CaptionGroup").hide();
+            } else {
+                $("#CaptionGroup").show();
+            }
+        }
 
         $(".utcTime").each(function() {
             var utctimeval = $(this).val().trim();
@@ -161,6 +185,12 @@
 
         });
 
+        $("#ScheduleForm").submit(function(event) {
+            var currTime = $("#dateInput").val();
+            currTime += ":59";
+            var date = new Date(currTime);
+            $("#STimeStamp").val(date.toISOString());
+        });
 
         $('#dateInput').inputmask("9999-99-99 99:99", { "placeholder": "yyyy-mm-dd hh:mm" });
 
@@ -179,7 +209,6 @@
 
             return 'other';
         }
-
 
 
         function readURL(input) {

@@ -23,20 +23,20 @@ namespace InstagramWeb.Controllers
         public ActionResult ScheduleList()
         {
             var scheduleList = new List<Schedule>();
-            if (user.RoleId == (int) Roles.Admin)
+            if (user.RoleId == (int)Roles.Admin)
             {
                 scheduleList = ScheduleContext.Schedules.ToList();
             }
             else
             {
-                scheduleList = ScheduleContext.Schedules.Where(x=>x.UserId == user.Id).ToList();
+                scheduleList = ScheduleContext.Schedules.Where(x => x.UserId == user.Id).ToList();
             }
             return View(scheduleList);
         }
 
         public ActionResult AddSchedule(int Id = 0)
         {
-            
+
             var schedule = new Schedule();
             var userList = ScheduleContext.Users.ToList();
             ViewBag.UserList = userList;
@@ -44,7 +44,7 @@ namespace InstagramWeb.Controllers
             {
                 if (user.RoleId == (int)Roles.User)
                 {
-                    schedule = ScheduleContext.Schedules.FirstOrDefault(x => x.Id == Id && x.UserId == user.Id );
+                    schedule = ScheduleContext.Schedules.FirstOrDefault(x => x.Id == Id && x.UserId == user.Id);
                 }
                 else
                 {
@@ -57,12 +57,7 @@ namespace InstagramWeb.Controllers
         [HttpPost]
         public ActionResult AddSchedule(Schedule obj)
         {
-            obj.TimeStamp = obj.TimeStamp.ToUniversalTime();
-            if (obj.LastTryDate != null)
-            {
-                obj.LastTryDate = ((DateTime) obj.LastTryDate).ToUniversalTime();
-            }
-
+            obj.TimeStamp = obj.TimeStamp.ToLocalTime();
             string mode = "";
             if (obj.Id == 0)
             {
@@ -97,7 +92,7 @@ namespace InstagramWeb.Controllers
                 }
                 if (mode == "insert")
                 {
-                    string jobId = BackgroundJob.Schedule(() => AutomaticPost.AutomaticPosts(obj.Id), obj.TimeStamp);
+                    string jobId = BackgroundJob.Schedule(() => AutomaticPost.AutomaticPosts(obj.Id, true), obj.TimeStamp);
                     obj.JobId = jobId;
                 }
                 else
@@ -105,7 +100,7 @@ namespace InstagramWeb.Controllers
                     if (!string.IsNullOrWhiteSpace(obj.JobId))
                     {
                         BackgroundJob.Delete(obj.JobId);
-                        string jobId = BackgroundJob.Schedule(() => AutomaticPost.AutomaticPosts(obj.Id), obj.TimeStamp);
+                        string jobId = BackgroundJob.Schedule(() => AutomaticPost.AutomaticPosts(obj.Id, true), obj.TimeStamp);
                         obj.JobId = jobId;
                     }
                 }
@@ -129,7 +124,7 @@ namespace InstagramWeb.Controllers
         }
 
         [HttpPost]
-        public async  Task<ActionResult> SchedulePost(int ScheduleId)
+        public async Task<ActionResult> SchedulePost(int ScheduleId)
         {
             await Schedule(ScheduleId);
             return RedirectToAction("AddSchedule", "Schedule");
@@ -138,98 +133,6 @@ namespace InstagramWeb.Controllers
         private async Task Schedule(int ScheduleId)
         {
             await AutomaticPost.AutomaticPosts(ScheduleId);
-            //string k = string.Empty;
-            //try
-            //{
-            //    var scheduleQuery = ScheduleContext.Schedules.AsQueryable();
-            //    var schedule = scheduleQuery.Include(x=>x.User).Include(x=>x.User.Proxy).FirstOrDefault(x => x.Id == ScheduleId);
-
-            //    //104.148.46.2:3121
-            //    var credentials = new InstagramCredential
-            //    {
-            //        Password = schedule.User.InstagramPassword,
-            //        Email = schedule.User.Email
-            //    };
-
-            //    string Url = "https://www.instagram.com/";
-
-
-            //    bool proxy = schedule.User.Proxy != null;
-            //    var browerFetcher = new BrowserFetcher();
-            //    await browerFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
-
-            //    //var path = Server.MapPath(browerFetcher.GetExecutablePath(BrowserFetcher.DefaultRevision));
-            //    //k = path;
-            //    using (var browser = Puppeteer.LaunchAsync(new LaunchOptions
-            //    {
-            //        Args = proxy ? new string[1] { $"--proxy-server={schedule.User.Proxy.IpAddress}" }: new string[0]{}, 
-            //        ExecutablePath = browerFetcher.GetExecutablePath(BrowserFetcher.DefaultRevision),
-            //        Headless = false,
-            //        Timeout = 120000
-            //    }).GetAwaiter().GetResult())
-            //    {
-            //        var devices = Puppeteer.Devices;
-            //        var iphone = devices[DeviceDescriptorName.IPhone6];
-            //        var page = browser.NewPageAsync().GetAwaiter().GetResult();
-            //        await page.EmulateAsync(iphone);
-
-            //        try
-            //        {
-            //            await page.GoToAsync(Url);
-            //            string html = await page.GetContentAsync();
-            //            System.Threading.Thread.Sleep(5000);
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Log In"));
-
-            //            System.Threading.Thread.Sleep(5000);
-            //            for (int i = 0; i < 4; i++)
-            //            {
-            //                await page.Keyboard.DownAsync(key: "Tab");
-            //                System.Threading.Thread.Sleep(500);
-            //            }
-
-            //            await page.Keyboard.TypeAsync(credentials.Email, new TypeOptions {Delay = 200});
-            //            await page.Keyboard.DownAsync(key: "Tab");
-            //            await page.Keyboard.TypeAsync(credentials.Password, new TypeOptions {Delay = 200});
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Log In", true));
-            //            System.Threading.Thread.Sleep(5000);
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Save Info"));
-            //            System.Threading.Thread.Sleep(5000);
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Cancel"));
-            //            System.Threading.Thread.Sleep(5000);
-            //            //Dont add await for this
-            //            page.EvaluateExpressionAsync(@"document.querySelector(""div[data-testid=new-post-button]"").click()");
-            //            var fileChooser = await page.WaitForFileChooserAsync();
-            //            await fileChooser.AcceptAsync(new string[] {Server.MapPath(schedule.ImagePath)});
-            //            System.Threading.Thread.Sleep(5000);
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Next"));
-            //            System.Threading.Thread.Sleep(5000);
-            //            for (int i = 0; i < 4; i++)
-            //            {
-            //                await page.Keyboard.DownAsync(key: "Tab");
-            //                System.Threading.Thread.Sleep(500);
-            //            }
-
-            //            await page.Keyboard.TypeAsync(schedule.Caption, new TypeOptions {Delay = 200});
-            //            await page.EvaluateExpressionAsync(AutomaticPost.ClickButton("Share"));
-            //            System.Threading.Thread.Sleep(10000);
-            //            schedule.PostedStatus = true;
-            //            schedule.LastTryDate = DateTime.Now;
-            //            schedule.Exception = "";
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            schedule.PostedStatus = false;
-            //            schedule.Exception = ex.ToString();
-            //            schedule.LastTryDate = DateTime.Now;
-            //        }
-
-            //        await ScheduleContext.SaveChangesAsync();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new Exception(ex.ToString() + ". " + k);
-            //}
         }
 
 
@@ -263,8 +166,8 @@ namespace InstagramWeb.Controllers
 
     public static class AutomaticPost
     {
-        public  static ScheduleContext ScheduleContext = new ScheduleContext();
-       
+        public static ScheduleContext ScheduleContext = new ScheduleContext();
+
         public static string ClickButton(string btnName, bool disabled = false)
         {
             string disableScript = "";
@@ -287,7 +190,7 @@ for (var i = 0; i < btnList.length; i++)
             return loginBtnScript;
         }
 
-        public static async Task AutomaticPosts(int scheduleId = 0)
+        public static async Task AutomaticPosts(int scheduleId = 0, bool retry = true)
         {
             string k = string.Empty;
             try
@@ -295,10 +198,10 @@ for (var i = 0; i < btnList.length; i++)
                 var DateFrom = DateTime.Now.AddMinutes(-30);
                 var DateTo = DateTime.Now;
                 var schedules = new List<Schedule>();
-                
+
                 if (scheduleId != 0)
                 {
-                    schedules =  ScheduleContext.Schedules.Include(x=>x.User).Include(x=>x.User.Proxy).Where(x => x.Id == scheduleId).ToList();
+                    schedules = ScheduleContext.Schedules.Include(x => x.User).Include(x => x.User.Proxy).Where(x => x.Id == scheduleId).ToList();
                 }
                 else
                 {
@@ -313,8 +216,6 @@ for (var i = 0; i < btnList.length; i++)
                 foreach (var schedule in schedules)
                 {
                     bool proxy = schedule.User.Proxy != null;
-
-
                     using (var browser = Puppeteer.LaunchAsync(new LaunchOptions
                     {
                         Args = proxy ? new string[2] { $"--proxy-server={schedule.User.Proxy.IpAddress}", "--ignore-certificate-errors" } : new string[0] { },
@@ -330,11 +231,11 @@ for (var i = 0; i < btnList.length; i++)
 
                         try
                         {
-                            if (!string.IsNullOrWhiteSpace(schedule.User.Proxy.Username))
+                            if (schedule.User.Proxy != null && !string.IsNullOrWhiteSpace(schedule.User.Proxy.Username))
                             {
                                 var credentials = new Credentials
                                 {
-                                    Password =  schedule.User.Proxy.Password,
+                                    Password = schedule.User.Proxy.Password,
                                     Username = schedule.User.Proxy.Username
                                 };
                                 await page.AuthenticateAsync(credentials);
@@ -350,7 +251,7 @@ for (var i = 0; i < btnList.length; i++)
                             }
 
                             await page.EvaluateExpressionAsync(ClickButton("Log In"));
-                        
+
 
                             System.Threading.Thread.Sleep(5000);
                             for (int i = 0; i < 4; i++)
@@ -361,23 +262,68 @@ for (var i = 0; i < btnList.length; i++)
                             await page.Keyboard.TypeAsync(schedule.User.InstagramUsername, new TypeOptions { Delay = 200 });
                             await page.Keyboard.DownAsync(key: "Tab");
                             await page.Keyboard.TypeAsync(schedule.User.InstagramPassword, new TypeOptions { Delay = 200 });
-                        
+
                             await page.EvaluateExpressionAsync(ClickButton("Log In", true));
                             System.Threading.Thread.Sleep(500);
-                            await page.WaitForNavigationAsync();
+                            await PageNavigation(page);
                             System.Threading.Thread.Sleep(5000);
-                            
+
                             await page.EvaluateExpressionAsync(ClickButton("Save Info"));
                             System.Threading.Thread.Sleep(500);
-                            await page.WaitForNavigationAsync();
+                            await PageNavigation(page);
                             System.Threading.Thread.Sleep(5000);
 
                             await page.EvaluateExpressionAsync(ClickButton("Cancel"));
                             System.Threading.Thread.Sleep(2000);
 
-                            if (schedule.Type == "Story")
+                            if (schedule.Type.ToLower() == "story")
                             {
+                                var html2 = await page.GetContentAsync();
+                                if (html2.Contains("Welcome to Instagram"))
+                                {
+                                    page.EvaluateExpressionAsync(@"document.querySelector(""header button"").click()");
+                                    var fileChooser = await page.WaitForFileChooserAsync();
+                                    await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
+                                    await PageNavigation(page);
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        page.EvaluateExpressionAsync(ClickButton("Your Story"));
+                                        var fileChooser = await page.WaitForFileChooserAsync();
+                                        await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
+                                        await PageNavigation(page);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        page.EvaluateExpressionAsync(ClickButton("Not Now"));
+                                        var fileChooser = await page.WaitForFileChooserAsync();
+                                        await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
+                                        await PageNavigation(page);
+                                    }
+                                }
 
+
+                                try
+                                {
+
+                                    System.Threading.Thread.Sleep(5000);
+                                    await page.EvaluateExpressionAsync(ClickButton("Add to your story"));
+                                    System.Threading.Thread.Sleep(500);
+                                    await PageNavigation(page);
+                                    System.Threading.Thread.Sleep(5000);
+                                    schedule.PostedStatus = true;
+                                    schedule.LastTryDate = DateTime.Now;
+                                    schedule.Exception = "";
+
+                                }
+                                catch (Exception ex)
+                                {
+                                    schedule.PostedStatus = true;
+                                    schedule.LastTryDate = DateTime.Now;
+                                    schedule.Exception = "Story Already Posted";
+                                }
                             }
                             else
                             {
@@ -385,11 +331,12 @@ for (var i = 0; i < btnList.length; i++)
                                 page.EvaluateExpressionAsync(@"document.querySelector(""div[data-testid=new-post-button]"").click()");
                                 var fileChooser = await page.WaitForFileChooserAsync();
                                 await fileChooser.AcceptAsync(new string[] { HostingEnvironment.MapPath(schedule.ImagePath) });
-                                await page.WaitForNavigationAsync();
+                                await PageNavigation(page);
                                 System.Threading.Thread.Sleep(5000);
 
                                 await page.EvaluateExpressionAsync(ClickButton("Next"));
-                                await page.WaitForNavigationAsync();
+                                await PageNavigation(page);
+
                                 System.Threading.Thread.Sleep(5000);
 
                                 for (int i = 0; i < 4; i++)
@@ -401,28 +348,40 @@ for (var i = 0; i < btnList.length; i++)
 
                                 await page.EvaluateExpressionAsync(ClickButton("Share"));
                                 System.Threading.Thread.Sleep(500);
-                                await page.WaitForNavigationAsync();
+                                await PageNavigation(page);
                                 System.Threading.Thread.Sleep(5000);
 
                                 schedule.PostedStatus = true;
                                 schedule.LastTryDate = DateTime.Now;
                                 schedule.Exception = "";
                             }
-
-                            
-
                         }
                         catch (Exception ex)
                         {
+                            try
+                            {
+                                string filename = DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss") + ".png";
+                                string path = HostingEnvironment.MapPath("~/Posts/Screenshots/" + filename);
+                                await page.ScreenshotAsync(path);
+                            }
+                            catch (Exception ex1)
+                            {
+                                schedule.Exception = ex1.ToString();
+                            }
+
                             schedule.PostedStatus = false;
-                            schedule.Exception = ex.ToString();
+                            schedule.Exception += ex.ToString();
                             schedule.LastTryDate = DateTime.Now;
+                            if (!string.IsNullOrWhiteSpace(schedule.Exception))
+                            {
+                                throw new Exception(schedule.Exception);
+                            }
                         }
                         await browser.CloseAsync();
                         await browser.DisposeAsync();
                         browser.Disconnected += (sender, args) =>
                         {
-                            #if !DEBUG
+#if !DEBUG
                             try
                             {
                                 foreach (var process in Process.GetProcessesByName("chrome"))
@@ -434,7 +393,7 @@ for (var i = 0; i < btnList.length; i++)
                             {
 
                             }
-                            #endif
+#endif
 
                         };
                         await ScheduleContext.SaveChangesAsync();
@@ -443,12 +402,27 @@ for (var i = 0; i < btnList.length; i++)
             }
             catch (Exception ex)
             {
+                if (retry)
+                {
+                    await AutomaticPosts(scheduleId, false);
+                }
+
                 throw new Exception(ex.ToString() + ". " + k);
             }
 
 
         }
 
+        private static async Task PageNavigation(Page page)
+        {
+            try
+            {
+                await page.WaitForNavigationAsync();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
     }
 
 

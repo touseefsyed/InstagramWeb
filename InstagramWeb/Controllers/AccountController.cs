@@ -7,7 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using InstagramWeb.Models.ViewModels;
-
+using InstagramWeb.Migrations;
 
 namespace InstagramWeb.Controllers
 {
@@ -27,7 +27,7 @@ namespace InstagramWeb.Controllers
             if (userRequest != null)
             {
                 Session["User"] = new SessionUser(userRequest);
-                return RedirectToAction("ScheduleList", "Schedule");
+                return RedirectToAction("Index", "Dashboard");
             }
             Notify("Error", "Invalid Credentials", "Your credentials are invalid", IsRedirectMessage:true);
             return RedirectToAction("Login", "Account");
@@ -40,6 +40,21 @@ namespace InstagramWeb.Controllers
             Session.Abandon();
             Session.Clear();
             return RedirectToAction("Login", "Account");
+        }
+
+
+
+        [HttpGet]
+        public ActionResult Authorize(string code, string state)
+        {
+            var user = ScheduleContext.Users.FirstOrDefault(x => x.Username == state);
+            user.InstagramAuthToken = code;
+            ScheduleContext.SaveChanges();
+            if (Session["User"] == null)
+            {
+                Session["User"] = new SessionUser(user);
+            }
+            return RedirectToAction("Index", "Dashboard");
         }
     }
 }

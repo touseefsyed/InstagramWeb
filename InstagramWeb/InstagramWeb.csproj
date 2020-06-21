@@ -1915,6 +1915,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\PanelController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\ProxyController.cs" />
@@ -1971,6 +1972,18 @@
     <Compile Include="Migrations\202006021921583_Proxies.cs" />
     <Compile Include="Migrations\202006021921583_Proxies.Designer.cs">
       <DependentUpon>202006021921583_Proxies.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006091220221_Story.cs" />
+    <Compile Include="Migrations\202006091220221_Story.Designer.cs">
+      <DependentUpon>202006091220221_Story.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006211602149_AddedAuthToken.cs" />
+    <Compile Include="Migrations\202006211602149_AddedAuthToken.Designer.cs">
+      <DependentUpon>202006211602149_AddedAuthToken.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202006211745266_AddedAuthTokenFacebook.cs" />
+    <Compile Include="Migrations\202006211745266_AddedAuthTokenFacebook.Designer.cs">
+      <DependentUpon>202006211745266_AddedAuthTokenFacebook.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChromeBot.cs" />
@@ -2083,6 +2096,7 @@
     <Content Include="Views\User\UserList.cshtml" />
     <Content Include="Views\Proxy\ProxyList.cshtml" />
     <Content Include="Views\Proxy\AddProxy.cshtml" />
+    <Content Include="Views\Dashboard\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2141,6 +2155,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006021921583_Proxies.resx">
       <DependentUpon>202006021921583_Proxies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006091220221_Story.resx">
+      <DependentUpon>202006091220221_Story.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006211602149_AddedAuthToken.resx">
+      <DependentUpon>202006211602149_AddedAuthToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006211745266_AddedAuthTokenFacebook.resx">
+      <DependentUpon>202006211745266_AddedAuthTokenFacebook.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

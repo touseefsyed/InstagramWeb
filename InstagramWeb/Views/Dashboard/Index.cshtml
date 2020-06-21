@@ -1,0 +1,331 @@
+﻿@using InstagramWeb.Models
+@{
+    ViewBag.Title = "Index";
+
+    var user = Session["User"] as SessionUser;
+    string instaAppId = "718129498975401";
+    string redirectUrl = "https://localhost:44334/Account/Authorize";
+    string scope = "user_profile,user_media";
+    string responseType = "code";
+    string state = user.Username;
+    string url = $@"https://api.instagram.com/oauth/authorize?client_id={instaAppId}&redirect_uri={redirectUrl}&scope={scope}&response_type={responseType}&state={state}";
+
+    bool pageIdRequired = string.IsNullOrWhiteSpace(user.FacebookPageId);
+
+}
+
+<!--style="display:none"-->
+<div class="jumbotron" style="display:none" id="NotLoggedIn">
+    <h1 class="display-4">Hello there!</h1>
+    <p class="lead">For any Graphical information to work, you must allow the app to connect to your facebook Profile and the Facebook Page.</p>
+    <hr class="my-4">
+    <p>To do that, just Login through the button.</p>
+    <p class="lead">
+        <fb:login-button scope="public_profile,email,instagram_basic,instagram_manage_insights,pages_show_list,pages_manage_ads,pages_manage_metadata,pages_read_engagement,pages_read_user_content,business_management"
+                         onlogin="checkLoginState();">
+        </fb:login-button>
+    </p>
+</div>
+
+<div id="LoggedIn" style="display:none;">
+    <div class="jumbotron" style="padding: 2rem 1rem 1rem 2rem;">
+        <p class="lead">Facebook Connected with Account <span id="status"></span></p>
+    </div>
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0 text-dark">Dashboard</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Dashboard v1</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header ui-sortable-handle" style="cursor: move;">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie mr-1"></i>
+                                Reach - Last 28 days
+                            </h3>
+
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content p-0">
+                                <canvas id="reach-chart" ></canvas>
+
+                            </div>
+                        </div><!-- /.card-body -->
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header ui-sortable-handle" style="cursor: move;">
+                            <h3 class="card-title">
+                                <i class="fas fa-chart-pie mr-1"></i>
+                                Impressions - Last 28 days
+                            </h3>
+
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content p-0">
+                                <canvas id="impression-chart"></canvas>
+                            </div>
+                        </div><!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+
+</div>
+
+<div class="modal" tabindex="-1" id="PageSelectorModal" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">You need to setup a facebook page</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>Any pages linked to your facebook profile will be visible here</div>
+                <div id="DivBody"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="UpdateFacebookPage" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<a href="@url">Authorize Instagram</a>*@
+
+
+@section scripts{
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v7.0&appId=474105780061816&autoLogAppEvents=1" nonce="4BRCGRIz"></script>
+    <script>
+
+
+        var authToken = '';
+        var pageIdRequired = @Html.Raw(Json.Encode(pageIdRequired));
+
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            if (response.status === 'connected') {
+                authToken = response.authResponse.accessToken;
+
+
+                if (pageIdRequired) {
+                    $.post("@Url.Action("FacebookPageJson","Dashboard")", { authToken }, function (resp) {
+                        resp = JSON.parse(resp);
+                        var html = '';
+                        $.each(resp.data, function (i, v) {
+                            html += `
+                    <div class="form-group">
+                        <input type="radio" name="FacebookPageId" required value="${v.id}" />
+                        <label>${v.name}</label>
+                    </div>
+                    `
+                        });
+                        $("#DivBody").html(html);
+                        $("#PageSelectorModal").modal("show");
+                        $("#UpdateFacebookPage").unbind().click(function () {
+                            var pageId = $("input[name='FacebookPageId']:checked").val();
+                            console.log(pageId);
+                            if (pageId == undefined || pageId == null) {
+                                bootbox.alert("you must select atleast one Page");
+                            } else {
+                                $.post("@Url.Action("UpdatePageId", "Dashboard")", { pageId, authToken }, function (resp) {
+                                    if (resp == "noAccount") {
+                                        $("#PageSelectorModal").modal("hide");
+                                        bootbox.alert("No Instagram Account associated", function (result) {
+                                            Notify2("Error", "Technical Error", "No instagram account attached");
+                                        });
+                                    } else if (resp == true) {
+                                        $("#PageSelectorModal").modal("hide");
+                                        Notify2("Success", "Successfully saved", "Page connected successfully");
+                                    } else {
+                                        $("#PageSelectorModal").modal("hide");
+                                        Notify2("Error", "Technical Error", "Unable to save due to technical issues");
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }
+                else
+                {
+                    @*$.post("@Url.Action("FetchMedia", "Dashboard")", { authToken }, function (resp) {
+                        console.log(resp);
+                    });*@
+                    $.post("@Url.Action("FetchInsights", "Dashboard")", { authToken }, function (resp) {
+                        var resp = JSON.parse(resp);
+                        drawGraphs(resp.data);
+
+                    });
+                     @*$.post("@Url.Action("FetchLifetimeInsights", "Dashboard")", { authToken }, function (resp) {
+                        console.log(resp);
+                    });*@
+                }
+
+                FB.api('/me', function (response) {
+                    console.log('Successful login for: ' + response.name);
+                    document.getElementById('status').innerHTML = response.name;
+                    $("#LoggedIn").show();
+                });
+
+
+            } else {
+                $("#NotLoggedIn").show();
+            }
+        }
+
+
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+
+        function drawGraphs(graphData) {
+            console.log(graphData);
+            var impressions = graphData.filter(x => x.name == "impressions")[0];
+            var reach = graphData.filter(x => x.name == "reach")[0];
+            console.log(impressions);
+
+            var ctx = document.getElementById("impression-chart");
+           
+            new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: impressions.values.map(x => x.end_time.split("T")[0].split('-').slice(1).join("-")),
+                datasets: [
+                    {
+                        label: "Sales",
+                        backgroundColor: [
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f"
+                        ],
+                        data: impressions.values.map(x => x.value) //+ (Math.floor(Math.random() * 100) + 1  )
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: ''
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            stepSize : 1
+                        }
+                    }]
+                }
+            }
+        });
+
+
+            var ctx2 = document.getElementById("reach-chart");
+          
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: reach.values.map(x => x.end_time.split("T")[0].split('-').slice(1).join("-")),
+                    datasets: [
+                        {
+                            label: "Sales",
+                            backgroundColor: [
+                                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                                "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                                "#3e95cd", "#8e5ea2", "#3cba9f"
+                            ],
+                            data: reach.values.map(x => x.value) // + (Math.floor(Math.random() * 100) + 1  )
+                        }
+                    ]
+                },
+                options: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: ''
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize : 1
+                            }
+                        }]
+                    }
+                }
+            });
+
+
+
+        }
+
+
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '570302270574999',
+                cookie: true,
+                xfbml: true,
+                version: 'v7.0'
+            });
+
+            FB.AppEvents.logPageView();
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            })
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+
+}
