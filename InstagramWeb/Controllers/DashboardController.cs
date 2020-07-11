@@ -24,18 +24,42 @@ namespace InstagramWeb.Controllers
     public class DashboardController : PanelController
     {
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public ActionResult Index(int option = 2)
         {
+
+            ViewBag.Option = option;
+            var context = new ScheduleContext();
+            DateTime monthOldDate = new DateTime();
+            if (option == 1)
+            {
+                monthOldDate = DateTime.Now.AddDays(-7);
+            }
+            else if (option == 2)
+            {
+                monthOldDate = DateTime.Now.AddMonths(-1);
+            }
+            else if (option == 3)
+            {
+                monthOldDate = DateTime.Now.AddYears(-1);
+            }
+            else
+            {
+                monthOldDate = DateTime.Now.AddMonths(-1);
+            }
+            
+            var data = context.DailyFollowerCount
+                .Where(x => x.UserId == user.Id && x.RecordedDate > monthOldDate)
+                .OrderBy(x => x.RecordedDate).ToList();
+            ViewBag.GraphData = data;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Index(string Token)
+        public async Task<ActionResult> Index(string Token)
         {
-            return View();
+            await AutomaticPost.GetDailyFollowers();
+            return RedirectToAction("Index");
         }
-
-
 
         public async Task<JsonResult> FacebookPageJson(string authToken)
         {

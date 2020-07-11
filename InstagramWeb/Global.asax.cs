@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -11,6 +12,7 @@ using Hangfire.SqlServer;
 using Hangfire.Storage;
 using InstagramWeb.Controllers;
 using InstagramWeb.Models;
+using Newtonsoft.Json;
 
 namespace InstagramWeb
 {
@@ -71,11 +73,45 @@ namespace InstagramWeb
                     RecurringJob.RemoveIfExists(recurringJob.Id);
                 }
             }
-
+            RecurringJob.AddOrUpdate(() => AutomaticPost.GetDailyFollowers(),  Cron.Daily);
             RecurringJob.AddOrUpdate(() => AutomaticPost.AutomaticPosts(0,false), Cron.Hourly);
-
             yield return new BackgroundJobServer();
         }
+    }
+
+
+
+    // Root myDeserializedClass = JsonConvert.DeserializeObject(myJsonResponse); 
+    public class EdgeFollowedBy
+    {
+        public int count { get; set; }
 
     }
+
+
+    public class InstaUser
+    {
+        public EdgeFollowedBy edge_followed_by { get; set; }
+    }
+
+    public class Graphql
+    {
+        public InstaUser user { get; set; }
+
+    }
+
+    public class Root
+    {
+        public string logging_page_id { get; set; }
+        public bool show_suggested_profiles { get; set; }
+        public bool show_follow_dialog { get; set; }
+        public Graphql graphql { get; set; }
+        public object toast_content_on_load { get; set; }
+
+    }
+
+
+
+
+
 }

@@ -64,4 +64,31 @@ namespace InstagramWeb.Models
         public string IpAddress { get; set; }
         public int Timeouts { get; set; }
     }
+
+    [Table("DailyFollowerCount", Schema = "Accounts")]
+    public class DailyFollowerCount
+    {
+        [Key]
+        public int Id { get; set; }
+        public int UserId { get; set; }
+
+        [ForeignKey("UserId")]
+        public User User { get; set; }
+
+        public DateTime RecordedDate { get; set; }
+        public long Followers { get; set; }
+
+        public string Exception { get; set; }
+    
+
+    }
+
+    public class DailyFollowerCountFilter
+    {
+        public int? UserId { get; set; }
+        public DateTime? RecordedDateFrom { get; set; }
+        public DateTime? RecordedDateTo { get; set; }
+        public int? Followers { get; set; }
+        public string Exception { get; set; }
+    }
 }

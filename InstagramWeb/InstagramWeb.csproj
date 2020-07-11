@@ -1913,6 +1913,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Common\ExtensionMethods.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
@@ -1985,6 +1986,14 @@
     <Compile Include="Migrations\202006211745266_AddedAuthTokenFacebook.Designer.cs">
       <DependentUpon>202006211745266_AddedAuthTokenFacebook.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202007012003178_GetFollowersCountRecorder.cs" />
+    <Compile Include="Migrations\202007012003178_GetFollowersCountRecorder.Designer.cs">
+      <DependentUpon>202007012003178_GetFollowersCountRecorder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007111619377_IntToLong.cs" />
+    <Compile Include="Migrations\202007111619377_IntToLong.Designer.cs">
+      <DependentUpon>202007111619377_IntToLong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ChromeBot.cs" />
     <Compile Include="Models\NotificationMessage.cs" />
@@ -1994,6 +2003,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\ViewModels\LoginRequest.cs" />
     <Compile Include="Models\ViewModels\RegisterRequest.cs" />
+    <Compile Include="Models\ViewModels\UserExceptionViewModel.cs" />
     <Compile Include="Models\ViewModels\UserListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -2097,6 +2107,7 @@
     <Content Include="Views\Proxy\ProxyList.cshtml" />
     <Content Include="Views\Proxy\AddProxy.cshtml" />
     <Content Include="Views\Dashboard\Index.cshtml" />
+    <Content Include="Views\User\UserException.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2164,6 +2175,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202006211745266_AddedAuthTokenFacebook.resx">
       <DependentUpon>202006211745266_AddedAuthTokenFacebook.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007012003178_GetFollowersCountRecorder.resx">
+      <DependentUpon>202007012003178_GetFollowersCountRecorder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007111619377_IntToLong.resx">
+      <DependentUpon>202007111619377_IntToLong.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

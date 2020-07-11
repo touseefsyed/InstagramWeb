@@ -1,36 +1,41 @@
 ﻿@using InstagramWeb.Models
+@using Newtonsoft.Json
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Dashboard";
+
 
     var user = Session["User"] as SessionUser;
-    string instaAppId = "718129498975401";
-    string redirectUrl = "https://localhost:44334/Account/Authorize";
-    string scope = "user_profile,user_media";
-    string responseType = "code";
-    string state = user.Username;
-    string url = $@"https://api.instagram.com/oauth/authorize?client_id={instaAppId}&redirect_uri={redirectUrl}&scope={scope}&response_type={responseType}&state={state}";
+    //string instaAppId = "718129498975401";
+    //string redirectUrl = "https://localhost:44334/Account/Authorize";
+    //string scope = "user_profile,user_media";
+    //string responseType = "code";
+    //string state = user.Username;
+    //string url = $@"https://api.instagram.com/oauth/authorize?client_id={instaAppId}&redirect_uri={redirectUrl}&scope={scope}&response_type={responseType}&state={state}";
 
-    bool pageIdRequired = string.IsNullOrWhiteSpace(user.FacebookPageId);
+    //bool pageIdRequired = string.IsNullOrWhiteSpace(user.FacebookPageId);
+
+    var data = ViewBag.GraphData as List<DailyFollowerCount>;
 
 }
 
 <!--style="display:none"-->
-<div class="jumbotron" style="display:none" id="NotLoggedIn">
-    <h1 class="display-4">Hello there!</h1>
-    <p class="lead">For any Graphical information to work, you must allow the app to connect to your facebook Profile and the Facebook Page.</p>
-    <hr class="my-4">
-    <p>To do that, just Login through the button.</p>
-    <p class="lead">
-        <fb:login-button scope="public_profile,email,instagram_basic,instagram_manage_insights,pages_show_list,pages_manage_ads,pages_manage_metadata,pages_read_engagement,pages_read_user_content,business_management"
-                         onlogin="checkLoginState();">
-        </fb:login-button>
-    </p>
-</div>
+@*<div class="jumbotron" style="display:none" id="NotLoggedIn">
+        <h1 class="display-4">Hello there!</h1>
+        <p class="lead">For any Graphical information to work, you must allow the app to connect to your facebook Profile and the Facebook Page.</p>
+        <hr class="my-4">
+        <p>To do that, just Login through the button.</p>
+        <p class="lead">
+            <fb:login-button scope="public_profile,email,instagram_basic,instagram_manage_insights,pages_show_list,pages_manage_ads,pages_manage_metadata,pages_read_engagement,pages_read_user_content,business_management"
+                             onlogin="checkLoginState();">
+            </fb:login-button>
+        </p>
+    </div>*@
 
-<div id="LoggedIn" style="display:none;">
-    <div class="jumbotron" style="padding: 2rem 1rem 1rem 2rem;">
-        <p class="lead">Facebook Connected with Account <span id="status"></span></p>
-    </div>
+
+<div id="LoggedIn">
+    @*<div class="jumbotron" style="padding: 2rem 1rem 1rem 2rem;">
+            <p class="lead">Facebook Connected with Account <span id="status"></span></p>
+        </div>*@
     <!-- Content Header (Page header) -->
     <div class="content-header">
         <div class="container-fluid">
@@ -52,39 +57,62 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-12">
                     <div class="card">
                         <div class="card-header ui-sortable-handle" style="cursor: move;">
-                            <h3 class="card-title">
-                                <i class="fas fa-chart-pie mr-1"></i>
-                                Reach - Last 28 days
-                            </h3>
-
+                            <div class="row">
+                                <div class="col-4">
+                                    <form method="get">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <label class="input-group-text" for="inputGroupSelect01"><i class="fas fa-chart-pie mr-1"></i></label>
+                                            </div>
+                                            <select onchange="this.form.submit()" name="option" class="form-control">
+                                                <option @(ViewBag.Option == 1 ? "selected" : "") value="1">Follower Increase - Last Week</option>
+                                                <option @(ViewBag.Option == 2 ? "selected" : "") value="2">Follower Increase - Last Month</option>
+                                                <option @(ViewBag.Option == 3 ? "selected" : "") value="3">Follower Increase - Last Year</option>
+                                            </select>
+                                        </div>
+                                    </form>
+                                </div>
+                                @if (user.RoleId == (int)InstagramWeb.Models.Roles.Admin)
+                                {
+                                    <div class="col-8">
+                                        <form method="post" @Url.Action("Index", "Dashboard")>
+                                            <div class="float-right">
+                                                <button class="btn btn-primary">Trigger Data Collection For today</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
                         </div><!-- /.card-header -->
                         <div class="card-body">
                             <div class="tab-content p-0">
-                                <canvas id="reach-chart" ></canvas>
-
+                                <canvas id="reach-chart"></canvas>
                             </div>
                         </div><!-- /.card-body -->
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header ui-sortable-handle" style="cursor: move;">
-                            <h3 class="card-title">
-                                <i class="fas fa-chart-pie mr-1"></i>
-                                Impressions - Last 28 days
-                            </h3>
+                @*
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header ui-sortable-handle" style="cursor: move;">
+                                <h3 class="card-title">
+                                    <i class="fas fa-chart-pie mr-1"></i>
+                                    Impressions - Last 28 days
+                                </h3>
 
-                        </div><!-- /.card-header -->
-                        <div class="card-body">
-                            <div class="tab-content p-0">
-                                <canvas id="impression-chart"></canvas>
-                            </div>
-                        </div><!-- /.card-body -->
+                            </div><!-- /.card-header -->
+                            <div class="card-body">
+                                <div class="tab-content p-0">
+                                    <canvas id="impression-chart"></canvas>
+                                </div>
+                            </div><!-- /.card-body -->
+                        </div>
                     </div>
-                </div>
+
+                *@
             </div>
 
         </div><!-- /.container-fluid -->
@@ -124,10 +152,11 @@
     <script>
 
 
-        var authToken = '';
-        var pageIdRequired = @Html.Raw(Json.Encode(pageIdRequired));
+        @*var authToken = '';
+        var pageIdRequired = @Html.Raw(Json.Encode(pageIdRequired));*@
 
-        function statusChangeCallback(response) {
+
+        @*function statusChangeCallback(response) {
             console.log('statusChangeCallback');
             console.log(response);
             if (response.status === 'connected') {
@@ -174,17 +203,12 @@
                 }
                 else
                 {
-                    @*$.post("@Url.Action("FetchMedia", "Dashboard")", { authToken }, function (resp) {
-                        console.log(resp);
-                    });*@
                     $.post("@Url.Action("FetchInsights", "Dashboard")", { authToken }, function (resp) {
                         var resp = JSON.parse(resp);
                         drawGraphs(resp.data);
 
                     });
-                     @*$.post("@Url.Action("FetchLifetimeInsights", "Dashboard")", { authToken }, function (resp) {
-                        console.log(resp);
-                    });*@
+
                 }
 
                 FB.api('/me', function (response) {
@@ -197,14 +221,65 @@
             } else {
                 $("#NotLoggedIn").show();
             }
-        }
+        }*@
 
 
-        function checkLoginState() {
-            FB.getLoginStatus(function (response) {
-                statusChangeCallback(response);
-            });
-        }
+        //function checkLoginState() {
+        //    FB.getLoginStatus(function (response) {
+        //        statusChangeCallback(response);
+        //    });
+        //}
+        var data = @Html.Raw(data != null && data.Count > 0 ? JsonConvert.SerializeObject(data.Select(x=> new {x.Followers, RecordedDate= x.RecordedDate.ToUniversalTime()  })) : "[]");
+        var datConverted = data.map(function (x) {
+            var date = new Date(x.RecordedDate);
+            var formatedDate = moment(date).format("DD MMM");
+            var k = {
+                Followers: x.Followers,
+                RecordedDate: formatedDate
+            };
+            return k;
+        });
+        console.log(datConverted);
+        var ctx2 = document.getElementById("reach-chart");
+
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: datConverted.map(x => x.RecordedDate),
+                datasets: [
+                    {
+                        label: "Sales",
+                        fill: false,
+                        borderColor: "#3e95cd",
+                        backgroundColor: [
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850",
+                            "#3e95cd", "#8e5ea2", "#3cba9f"
+                        ],
+                        data: datConverted.map(x => x.Followers)
+                    }
+                ]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: ''
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }]
+                }
+            }
+        });
+
+
 
         function getRandomColor() {
             var letters = '0123456789ABCDEF'.split('');
@@ -216,6 +291,8 @@
         }
 
 
+
+
         function drawGraphs(graphData) {
             console.log(graphData);
             var impressions = graphData.filter(x => x.name == "impressions")[0];
@@ -223,7 +300,7 @@
             console.log(impressions);
 
             var ctx = document.getElementById("impression-chart");
-           
+
             new Chart(ctx, {
             type: 'bar',
             data: {
@@ -262,7 +339,7 @@
 
 
             var ctx2 = document.getElementById("reach-chart");
-          
+
             new Chart(ctx2, {
                 type: 'bar',
                 data: {
@@ -304,27 +381,27 @@
         }
 
 
-        window.fbAsyncInit = function () {
-            FB.init({
-                appId: '570302270574999',
-                cookie: true,
-                xfbml: true,
-                version: 'v7.0'
-            });
+        //window.fbAsyncInit = function () {
+        //    FB.init({
+        //        appId: '570302270574999',
+        //        cookie: true,
+        //        xfbml: true,
+        //        version: 'v7.0'
+        //    });
 
-            FB.AppEvents.logPageView();
-            FB.getLoginStatus(function (response) {
-                statusChangeCallback(response);
-            })
-        };
+        //    FB.AppEvents.logPageView();
+        //    FB.getLoginStatus(function (response) {
+        //        statusChangeCallback(response);
+        //    })
+        //};
 
-        (function (d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) { return; }
-            js = d.createElement(s); js.id = id;
-            js.src = "https://connect.facebook.net/en_US/sdk.js";
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
+        //(function (d, s, id) {
+        //    var js, fjs = d.getElementsByTagName(s)[0];
+        //    if (d.getElementById(id)) { return; }
+        //    js = d.createElement(s); js.id = id;
+        //    js.src = "https://connect.facebook.net/en_US/sdk.js";
+        //    fjs.parentNode.insertBefore(js, fjs);
+        //}(document, 'script', 'facebook-jssdk'));
     </script>
 
 

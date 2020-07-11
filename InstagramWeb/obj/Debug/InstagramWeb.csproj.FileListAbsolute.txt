@@ -218,3 +218,5 @@ C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Mig
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.csprojAssemblyReference.cache
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.AddedAuthToken.resources
 C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.AddedAuthTokenFacebook.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.GetFollowersCountRecorder.resources
+C:\Users\Zawar\source\repos\InstagramWeb\InstagramWeb\obj\Debug\InstagramWeb.Migrations.IntToLong.resources

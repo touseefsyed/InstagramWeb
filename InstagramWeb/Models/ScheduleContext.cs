@@ -14,6 +14,8 @@ namespace InstagramWeb.Models
 
         public DbSet<Proxy> Proxies { get; set; }
 
+        public DbSet<DailyFollowerCount> DailyFollowerCount { get; set; }
+
         public ScheduleContext() : base("name=DefaultConnectionString")
         {
 

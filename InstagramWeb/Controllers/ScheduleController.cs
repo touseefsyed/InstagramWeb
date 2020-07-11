@@ -5,11 +5,14 @@ using System.Data.Entity.Migrations;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Runtime.Serialization.Formatters;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using Hangfire;
+using InstagramWeb.Common;
 using InstagramWeb.Models;
 using PuppeteerSharp;
 using PuppeteerSharp.Input;
@@ -188,6 +191,153 @@ for (var i = 0; i < btnList.length; i++)
 }}
                     ";
             return loginBtnScript;
+        }
+
+
+        public static async Task GetDailyFollowers()
+        {
+            ScheduleContext scheduleContext = new ScheduleContext();
+            foreach (var item in scheduleContext.Users.ToList())
+            {
+                if (string.IsNullOrWhiteSpace(item.InstagramUsername))
+                {
+                    continue;
+                }
+
+                string Url = "https://www.instagram.com/";
+                var browerFetcher = new BrowserFetcher();
+                await browerFetcher.DownloadAsync(BrowserFetcher.DefaultRevision);
+
+                bool proxy = item.Proxy != null;
+                using (var browser = Puppeteer.LaunchAsync(new LaunchOptions
+                {
+                    Args = proxy ? new string[2] { $"--proxy-server={item.Proxy.IpAddress}", "--ignore-certificate-errors" } : new string[0] { },
+                    ExecutablePath = browerFetcher.GetExecutablePath(BrowserFetcher.DefaultRevision),
+                    Headless = false,
+                    Timeout = 120000
+                }).GetAwaiter().GetResult())
+                {
+                    var devices = Puppeteer.Devices;
+                    var iphone = devices[DeviceDescriptorName.IPhone6];
+                    var page = browser.NewPageAsync().GetAwaiter().GetResult();
+                    await page.EmulateAsync(iphone);
+
+                    long followerCount = 0;
+                    string exception = string.Empty;
+                    var ApiLink = $"https://www.instagram.com/{item.InstagramUsername}";
+                    string k = string.Empty;
+                    try
+                    {
+                        
+                        if (item.Proxy != null && !string.IsNullOrWhiteSpace(item.Proxy.Username))
+                        {
+                            var credentials = new Credentials
+                            {
+                                Password = item.Proxy.Password,
+                                Username = item.Proxy.Username
+                            };
+                            await page.AuthenticateAsync(credentials);
+                        }
+
+                        await page.GoToAsync(Url);
+                        string html = await page.GetContentAsync();
+                        System.Threading.Thread.Sleep(5000);
+                        if (html.Contains("coreSpriteDismissLarge"))
+                        {
+                            await page.EvaluateExpressionAsync(ClickButton("Close"));
+                            System.Threading.Thread.Sleep(2000);
+                        }
+                        await page.EvaluateExpressionAsync(ClickButton("Log In"));
+
+
+                        System.Threading.Thread.Sleep(5000);
+                        for (int i = 0; i < 4; i++)
+                        {
+                            await page.Keyboard.DownAsync(key: "Tab");
+                            System.Threading.Thread.Sleep(500);
+                        }
+                        await page.Keyboard.TypeAsync(item.InstagramUsername, new TypeOptions { Delay = 200 });
+                        await page.Keyboard.DownAsync(key: "Tab");
+                        await page.Keyboard.TypeAsync(item.InstagramPassword, new TypeOptions { Delay = 200 });
+
+                        await page.EvaluateExpressionAsync(ClickButton("Log In", true));
+                        System.Threading.Thread.Sleep(500);
+                        await PageNavigation(page);
+                        System.Threading.Thread.Sleep(5000);
+                        await page.GoToAsync(ApiLink);
+                        await PageNavigation(page);
+                        k = await page.GetContentAsync();
+                        //"userInteractionCount":"2836"
+                        string l = k.Split(new string[] { "userInteractionCount" }, StringSplitOptions.None)[1];
+                        string m = l.Split(new string[] { ":" }, StringSplitOptions.None)[1];
+                        var count = m.Split('}').Where(x => !string.IsNullOrEmpty(x)).FirstOrDefault();
+                        count = count.Replace("\"", "").Replace(",", "");
+                   
+                        followerCount = long.Parse(count);
+                    }
+                    catch (Exception ex) 
+                    {
+                        exception = ex.ToString() + ", Url = " + ApiLink +", Html = "+k;
+                    }
+
+                    var existingRecord = scheduleContext.DailyFollowerCount
+                        .FirstOrDefault(x => x.UserId == item.Id 
+                        && x.RecordedDate.Year == DateTime.Now.Year 
+                        && x.RecordedDate.Month == DateTime.Now.Month 
+                        && x.RecordedDate.Day == DateTime.Now.Day );
+                    if (existingRecord != null)
+                    {
+                        existingRecord.Followers = followerCount;
+                        existingRecord.RecordedDate = DateTime.Now;
+                        existingRecord.UserId = item.Id;
+                        existingRecord.Exception = exception;
+                        scheduleContext.SaveChanges();
+                    }
+                    else 
+                    {
+                        scheduleContext.DailyFollowerCount.Add(new DailyFollowerCount
+                        {
+                            Followers = followerCount,
+                            RecordedDate = DateTime.Now,
+                            UserId = item.Id,
+                            Exception = exception
+                        });
+                        scheduleContext.SaveChanges();
+                    }
+                }
+
+                //var instagramApiLink = $"https://www.instagram.com/{item.InstagramUsername}";
+                //using (var client = new HttpClient())
+                //{
+                //    string k = string.Empty;
+                //    int followerCount = 0;
+                //    string exception = string.Empty;
+                //    try
+                //    {
+                //        var result = client.GetAsync(instagramApiLink).GetAwaiter().GetResult();
+                //        k = result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                //        string l = k.Split(new string[] { "Followers" }, StringSplitOptions.None)[0];
+                //        var count = l.Split(' ').Where(x => !string.IsNullOrEmpty(x)).LastOrDefault();
+                //        count = count.Replace("\"", "").Replace(",", "").Split('=')[1];
+                //        followerCount = int.Parse(count);
+                //    }
+
+                //    catch (Exception ex)
+                //    {
+                //        exception = ex.ToString() + ": APILink = " + instagramApiLink + ",Html : " + k;
+                //    }
+
+
+                //    scheduleContext.DailyFollowerCount.Add(new DailyFollowerCount
+                //    {
+                //        Followers = followerCount,
+                //        RecordedDate = DateTime.Now,
+                //        UserId = item.Id,
+                //        Exception = exception
+                //    });
+                //    scheduleContext.SaveChanges();
+                //}
+            }
         }
 
         public static async Task AutomaticPosts(int scheduleId = 0, bool retry = true)

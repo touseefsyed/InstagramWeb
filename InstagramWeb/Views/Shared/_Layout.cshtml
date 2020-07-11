@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Get Fruity | Blank Page</title>
+    <title>Get Fruity | @ViewBag.Title</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -143,6 +143,12 @@
                                         <a href="@Url.Action("UserList", "User")" class="nav-link">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>User List</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="@Url.Action("UserException", "User")" class="nav-link">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Graph Data</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">

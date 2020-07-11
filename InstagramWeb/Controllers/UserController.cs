@@ -11,12 +11,51 @@ using System.Web.UI;
 using InstagramWeb.Filters;
 using InstagramWeb.Models;
 using InstagramWeb.Models.ViewModels;
+using System.Data.Entity;
 
 namespace InstagramWeb.Controllers
 {
     using Roles = Models.Roles;
     public class UserController : PanelController
     {
+
+        [HttpGet]
+        [Role((int)Roles.Admin)]
+        public ActionResult UserException(DailyFollowerCountFilter dailyFollowerCountFilter)
+        {
+            if(dailyFollowerCountFilter == null)
+            {
+                dailyFollowerCountFilter = new DailyFollowerCountFilter();
+            }
+
+            var dailyFollowerCount = ScheduleContext.DailyFollowerCount.Include(x=>x.User).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(dailyFollowerCountFilter.Exception))
+            {
+                dailyFollowerCount = dailyFollowerCount.Where(x => x.Exception.Contains(dailyFollowerCountFilter.Exception));
+            }
+            if (dailyFollowerCountFilter.Followers >= 0)
+            {
+                dailyFollowerCount = dailyFollowerCount.Where(x => x.Followers == dailyFollowerCountFilter.Followers);
+            }
+            if (dailyFollowerCountFilter.RecordedDateFrom != null)
+            {
+                dailyFollowerCount = dailyFollowerCount.Where(x => x.RecordedDate >= dailyFollowerCountFilter.RecordedDateFrom);
+
+            }
+            if (dailyFollowerCountFilter.RecordedDateTo != null)
+            {
+                dailyFollowerCount = dailyFollowerCount.Where(x => x.RecordedDate <= dailyFollowerCountFilter.RecordedDateTo);
+            }
+            if (dailyFollowerCountFilter.UserId != null)
+            {
+                dailyFollowerCount = dailyFollowerCount.Where(x => x.UserId <= dailyFollowerCountFilter.UserId);
+            }
+
+            return View(new UserExceptionViewModel {Users =ScheduleContext.Users.ToList(),  DailyFollowerCountFilter = dailyFollowerCountFilter, DailyFollowerCount = dailyFollowerCount.OrderByDescending(x=>x.RecordedDate).ToList() });
+        }
+
+
+
         [HttpGet]
         [Role((int)Roles.Admin)]
         public ActionResult UserList(User UserFilter)
@@ -66,21 +105,21 @@ namespace InstagramWeb.Controllers
             userVm.Proxies = proxies;
             if (Id != 0)
             {
-                var user = ScheduleContext.Users.FirstOrDefault(x => x.Id == Id);
+                var curUser = ScheduleContext.Users.FirstOrDefault(x => x.Id == Id);
                 userVm = new RegisterRequest
                 {
-                    Username = user.Username,
-                    LastName = user.LastName,
-                    ConfirmPassword = user.Password,
-                    Password = user.Password,
-                    FirstName = user.FirstName,
-                    RoleId = user.RoleId,
-                    Email = user.Email,
-                    ImagePath = user.ImagePath,
-                    Id = user.Id,
-                    ProxyId = user.ProxyId,
-                    InstagramUsername = user.InstagramUsername,
-                    InstagramPassword = user.InstagramPassword,
+                    Username = curUser.Username,
+                    LastName = curUser.LastName,
+                    ConfirmPassword = curUser.Password,
+                    Password = curUser.Password,
+                    FirstName = curUser.FirstName,
+                    RoleId = curUser.RoleId,
+                    Email = curUser.Email,
+                    ImagePath = curUser.ImagePath,
+                    Id = curUser.Id,
+                    ProxyId = curUser.ProxyId,
+                    InstagramUsername = curUser.InstagramUsername,
+                    InstagramPassword = curUser.InstagramPassword,
                     Proxies =  proxies
                 };
             }
@@ -104,8 +143,8 @@ namespace InstagramWeb.Controllers
                     string fn = Path.GetFileName(UserVm.ImageFile.FileName);
                     string fileExtension = fn.Remove(0, fn.IndexOf('.') + 1);
                     fn = UserVm.Id + "_." + fileExtension;
-                    string SaveLocation = "~/Public/Files/ProfileImages";
-                    UserVm.ImagePath = Path.Combine(SaveLocation, fn);
+                    string SaveLocation = "~/Public/Files/ProfileImages/";
+                    UserVm.ImagePath = SaveLocation + fn;
                     string FilePath = Server.MapPath(SaveLocation);
                     UserVm.ImageFile.SaveAs(Path.Combine(FilePath, fn));
                 }
@@ -115,6 +154,10 @@ namespace InstagramWeb.Controllers
 
                 userId = u.Id;
                 ScheduleContext.SaveChanges();
+            }
+            if (Profile)
+            {
+                Session["User"] = new SessionUser(ScheduleContext.Users.FirstOrDefault(x=>x.Id == user.Id));
             }
             if (UserVm.Id == 0)
             {
@@ -140,7 +183,6 @@ namespace InstagramWeb.Controllers
 
 
         [HttpPost]
-
         [Role((int)Roles.Admin)]
         public bool DeleteUser(int UserId)
         {
@@ -153,8 +195,22 @@ namespace InstagramWeb.Controllers
             Notify("Success", "Successfully Deleted", "User Deleted Successfully", IsRedirectMessage: true);
             return true;
         }
-        [HttpPost]
 
+        [HttpPost]
+        [Role((int)Roles.Admin)]
+        public bool DeleteException(int ExceptionId)
+        {
+            var user = ScheduleContext.DailyFollowerCount.FirstOrDefault(x => x.Id == ExceptionId);
+            if (user != null)
+            {
+                ScheduleContext.DailyFollowerCount.Remove(user);
+                ScheduleContext.SaveChanges();
+            }
+            Notify("Success", "Successfully Deleted", "Record Deleted Successfully", IsRedirectMessage: true);
+            return true;
+        }
+
+        [HttpPost]
         [Role((int)Roles.Admin)]
         public bool ToggleBlockUser(int UserId)
         {

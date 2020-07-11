@@ -44,7 +44,7 @@ namespace InstagramWeb.Models.ViewModels
         public string ImagePath { get; set; }
 
         [Required]
-        [DisplayName("Instagram Email/Username/Phone")]
+        [DisplayName("Instagram Username(Not email or phone)")]
    
         public string InstagramUsername { get; set; }
         [Required]
